@@ -253,7 +253,7 @@ figure {
 	background-size: cover;
 	position: relative;
 	@media screen and (max-width: $screen-sm) {
-		heifght: inherit;
+		height: inherit;
 		padding: 3em 0;
 	}
 	.display-t{
@@ -1807,6 +1807,148 @@ figure {
 	height: 100%;
 	z-index: 9999;
 	background: url(../images/hourglass.svg) center no-repeat #222222;
+}
+
+/* Mobile invitation polish */
+@media screen and (max-width: $screen-sm) {
+	.fh5co-cover {
+		min-height: 100vh;
+		padding: 2em 0;
+	}
+
+	.fh5co-cover .display-t {
+		height: 100vh;
+		min-height: 620px;
+	}
+
+	.fh5co-cover .display-tc h2 {
+		font-size: 48px;
+		line-height: 1.1;
+		margin-bottom: 20px;
+	}
+
+	.fh5co-cover .display-tc p {
+		font-size: 13px;
+		letter-spacing: 3px;
+	}
+
+	.floral-cover .cover-guest-name {
+		font-size: 22px;
+		margin-bottom: 18px;
+		padding: 0 12px;
+	}
+
+	.floral-cover .cover-recipient-label,
+	.floral-cover .cover-invite-text {
+		letter-spacing: 1px;
+	}
+
+	#fh5co-couple .col-xs-5,
+	#fh5co-couple .col-xs-2 {
+		float: none;
+		width: 100%;
+		padding: 0 20px !important;
+	}
+
+	#fh5co-couple .amp-center {
+		margin: 15px 0;
+		font-size: 34px;
+	}
+
+	#fh5co-couple img {
+		max-width: 180px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.heading-section {
+		margin-bottom: 2em;
+	}
+
+	.heading-section h2 {
+		font-size: 38px;
+	}
+
+	.heading-section p {
+		font-size: 15px;
+	}
+
+	#fh5co-couple,
+	#fh5co-countdown,
+	#fh5co-started,
+	#fh5co-when-where,
+	#fh5co-gallery,
+	.fh5co-content-section {
+		padding: 4em 0;
+	}
+
+	.wedding-events {
+		margin-bottom: 25px;
+	}
+
+	.wedding-events .ceremony-bg {
+		height: 240px;
+	}
+
+	.wedding-events .desc {
+		padding: 1.5em;
+	}
+
+	#fh5co-countdown .countdown {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 14px 20px;
+		font-size: 42px;
+	}
+
+	#fh5co-countdown .countdown span {
+		min-width: 70px;
+		margin: 0;
+	}
+
+	#fh5co-started .form-inline .form-group {
+		margin-bottom: 14px;
+	}
+
+	#fh5co-started .btn-block {
+		width: 100%;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.gallery .gallery-img {
+		border-radius: 12px;
+	}
+
+	.gallery .gallery-img img {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.fh5co-cover .display-t {
+		min-height: 560px;
+	}
+
+	.fh5co-cover .display-tc h2 {
+		font-size: 40px;
+	}
+
+	.floral-cover .cover-guest-name {
+		font-size: 20px;
+	}
+
+	.viding-tree {
+		opacity: .85;
+	}
+
+	#fh5co-countdown .countdown {
+		font-size: 34px;
+		gap: 12px 16px;
+	}
 }
 
 
