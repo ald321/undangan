@@ -1843,6 +1843,19 @@ figure {
 		letter-spacing: 1px;
 	}
 
+	.floral-cover .cover-date {
+		margin-bottom: 22px;
+	}
+
+	.floral-cover .cover-date span {
+		display: inline-block;
+		max-width: calc(100vw - 48px);
+		font-size: 13px;
+		line-height: 1.6;
+		letter-spacing: 1px;
+		white-space: normal;
+	}
+
 	#fh5co-couple .col-xs-5,
 	#fh5co-couple .col-xs-2 {
 		float: none;
@@ -1939,6 +1952,11 @@ figure {
 
 	.floral-cover .cover-guest-name {
 		font-size: 20px;
+	}
+
+	.floral-cover .cover-date span {
+		font-size: 12px;
+		letter-spacing: .5px;
 	}
 
 	.viding-tree {
