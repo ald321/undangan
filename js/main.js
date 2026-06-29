@@ -149,6 +149,16 @@
 		});
 	};
 
+	var startMusicOnFirstInteraction = function() {
+		$(document).one('click touchstart keydown', function() {
+			var music = document.getElementById('wedding-music');
+
+			if (music && music.paused) {
+				playWeddingMusic();
+			}
+		});
+	};
+
 	var personalizedGuest = function() {
 		var guestName = $('#guest-name');
 
@@ -272,12 +282,13 @@
 
 	// Document on load.
 
-	$(function(){
+	$(document).ready(function() {
 		parallax();
 		contentWayPoint();
 		personalizedGuest();
 		invitationGate();
 		musicToggle();
+		startMusicOnFirstInteraction();
 		weddingCountdown();
 		smoothScroll();
 		staticForms();
