@@ -1050,6 +1050,42 @@ figure {
   overflow: hidden;
   background: #f8e5d7 url(../images/viding-sky.webp) center top/cover fixed no-repeat;
   animation: skyBreathe 18s ease-in-out infinite;
+  will-change: background-size, opacity;
+}
+
+#cover {
+  transform-origin: center center;
+  will-change: opacity, transform;
+}
+
+#cover.cover-closing {
+  animation: coverZoomClose 950ms ease-in-out forwards;
+}
+
+#invitation-content.invitation-opening {
+  animation: invitationFadeIn 850ms ease-out forwards, skyBreathe 18s ease-in-out infinite;
+}
+
+@keyframes coverZoomClose {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(2px);
+  }
+}
+
+@keyframes invitationFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 #invitation-content:before,

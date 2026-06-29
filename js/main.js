@@ -55,29 +55,71 @@
 		var content = $('#invitation-content');
 		var openButton = $('#open-invitation');
 
-		if (!cover.length || !content.length || !openButton.length) {
+		if (!cover.length || !openButton.length) {
 			return;
 		}
 
 		$('html, body').scrollTop(0);
+
+		if (!content.length) {
+			openButton.on('click', function(e) {
+				var destination = openButton.attr('href') || 'invitation.html';
+
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				if (openButton.hasClass('is-opening')) {
+					return;
+				}
+
+				openButton.addClass('is-opening');
+				cover.addClass('cover-closing');
+
+				if (window.location.search && destination.indexOf('?') === -1) {
+					destination += window.location.search;
+				}
+
+				try {
+					sessionStorage.setItem('invitationOpened', 'true');
+				} catch (error) {}
+
+				setTimeout(function() {
+					window.location.href = destination;
+				}, 950);
+			});
+			return;
+		}
+
 		content.hide();
 
 		openButton.on('click', function(e) {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
+			if (openButton.hasClass('is-opening')) {
+				return;
+			}
+
+			openButton.addClass('is-opening');
 			playWeddingMusic();
 
-			cover.fadeOut(600, function() {
-				content.fadeIn(600, function() {
-					if (typeof Waypoint !== 'undefined' && Waypoint.refreshAll) {
-						Waypoint.refreshAll();
-					}
-					$('html, body').animate({
-						scrollTop: content.offset().top
-					}, 500, 'easeInOutExpo');
-				});
-			});
+			content
+				.css('opacity', 0)
+				.show()
+				.addClass('invitation-opening');
+			cover.addClass('cover-closing');
+
+			setTimeout(function() {
+				cover.hide();
+				content.css('opacity', '').removeClass('invitation-opening');
+
+				if (typeof Waypoint !== 'undefined' && Waypoint.refreshAll) {
+					Waypoint.refreshAll();
+				}
+				$('html, body').animate({
+					scrollTop: content.offset().top
+				}, 700, 'easeInOutExpo');
+			}, 950);
 		});
 	};
 
@@ -157,6 +199,19 @@
 				playWeddingMusic();
 			}
 		});
+	};
+
+	var resumeMusicAfterCover = function() {
+		var wasOpened = false;
+
+		try {
+			wasOpened = sessionStorage.getItem('invitationOpened') === 'true';
+			sessionStorage.removeItem('invitationOpened');
+		} catch (error) {}
+
+		if (wasOpened && !$('#cover').length) {
+			setTimeout(playWeddingMusic, 300);
+		}
 	};
 
 	var personalizedGuest = function() {
@@ -288,6 +343,7 @@
 		personalizedGuest();
 		invitationGate();
 		musicToggle();
+		resumeMusicAfterCover();
 		startMusicOnFirstInteraction();
 		weddingCountdown();
 		smoothScroll();
