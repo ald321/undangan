@@ -1854,6 +1854,61 @@ figure {
   background: url(../images/hourglass.svg) center no-repeat #222222;
 }
 
+.music-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9998;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: #F69D9D;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  -webkit-transition: 0.3s ease;
+  -o-transition: 0.3s ease;
+  transition: 0.3s ease;
+}
+
+.music-toggle:hover,
+.music-toggle:focus {
+  background: #f47f7f;
+  color: #fff;
+  outline: none;
+}
+
+.music-toggle.is-playing i {
+  -webkit-animation: musicPulse 1.4s ease-in-out infinite;
+  animation: musicPulse 1.4s ease-in-out infinite;
+}
+
+@-webkit-keyframes musicPulse {
+  0%, 100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.18);
+    transform: scale(1.18);
+  }
+}
+
+@keyframes musicPulse {
+  0%, 100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(1.18);
+    transform: scale(1.18);
+  }
+}
+
 /* Mobile invitation polish */
 @media screen and (max-width: 768px) {
   .fh5co-cover {

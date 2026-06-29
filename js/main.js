@@ -66,6 +66,8 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
+			playWeddingMusic();
+
 			cover.fadeOut(600, function() {
 				content.fadeIn(600, function() {
 					if (typeof Waypoint !== 'undefined' && Waypoint.refreshAll) {
@@ -76,6 +78,74 @@
 					}, 500, 'easeInOutExpo');
 				});
 			});
+		});
+	};
+
+	var updateMusicButton = function(isPlaying) {
+		var button = $('#music-toggle');
+
+		if (!button.length) {
+			return;
+		}
+
+		button.toggleClass('is-playing', isPlaying);
+		button.attr('aria-pressed', isPlaying ? 'true' : 'false');
+		button.attr('aria-label', isPlaying ? 'Jeda musik' : 'Putar musik');
+		button.find('span').text(isPlaying ? 'Pause' : 'Play');
+	};
+
+	var playWeddingMusic = function() {
+		var music = document.getElementById('wedding-music');
+
+		if (!music) {
+			return;
+		}
+
+		var playPromise = music.play();
+
+		if (playPromise && typeof playPromise.then === 'function') {
+			playPromise
+				.then(function() {
+					updateMusicButton(true);
+				})
+				.catch(function() {
+					updateMusicButton(false);
+				});
+			return;
+		}
+
+		updateMusicButton(true);
+	};
+
+	var pauseWeddingMusic = function() {
+		var music = document.getElementById('wedding-music');
+
+		if (!music) {
+			return;
+		}
+
+		music.pause();
+		updateMusicButton(false);
+	};
+
+	var musicToggle = function() {
+		var music = document.getElementById('wedding-music');
+		var button = $('#music-toggle');
+
+		if (!music || !button.length) {
+			return;
+		}
+
+		updateMusicButton(!music.paused);
+
+		button.on('click', function(e) {
+			e.preventDefault();
+
+			if (music.paused) {
+				playWeddingMusic();
+			} else {
+				pauseWeddingMusic();
+			}
 		});
 	};
 
@@ -207,6 +277,7 @@
 		contentWayPoint();
 		personalizedGuest();
 		invitationGate();
+		musicToggle();
 		weddingCountdown();
 		smoothScroll();
 		staticForms();
