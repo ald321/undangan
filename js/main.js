@@ -123,6 +123,36 @@
 		});
 	};
 
+	var protectInvitationPage = function() {
+		var isInvitationPage = $('#invitation-content').length && !$('#cover').length;
+		var canOpen = false;
+
+		if (!isInvitationPage) {
+			return true;
+		}
+
+		try {
+			canOpen = sessionStorage.getItem('invitationOpened') === 'true';
+		} catch (error) {}
+
+		if (!canOpen) {
+			window.location.replace('index.html' + window.location.search);
+			return false;
+		}
+
+		return true;
+	};
+
+	var invitationBackLink = function() {
+		var backLink = $('#back-to-cover');
+
+		if (!backLink.length || !window.location.search) {
+			return;
+		}
+
+		backLink.attr('href', backLink.attr('href') + window.location.search);
+	};
+
 	var updateMusicButton = function(isPlaying) {
 		var button = $('#music-toggle');
 
@@ -338,9 +368,14 @@
 	// Document on load.
 
 	$(document).ready(function() {
+		if (!protectInvitationPage()) {
+			return;
+		}
+
 		parallax();
 		contentWayPoint();
 		personalizedGuest();
+		invitationBackLink();
 		invitationGate();
 		musicToggle();
 		resumeMusicAfterCover();

@@ -1066,6 +1066,26 @@ figure {
   animation: invitationFadeIn 850ms ease-out forwards, skyBreathe 18s ease-in-out infinite;
 }
 
+.invitation-back {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 20;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #5a5a5a;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(31, 22, 30, 0.18);
+}
+
+.invitation-back:hover,
+.invitation-back:focus {
+  color: #F69D9D;
+  background: rgba(255, 255, 255, 0.94);
+}
+
 @keyframes coverZoomClose {
   0% {
     opacity: 1;
@@ -1119,6 +1139,11 @@ figure {
   z-index: 1;
 }
 
+#invitation-content > .invitation-back {
+  position: fixed;
+  z-index: 20;
+}
+
 #invitation-content > .invitation-petals,
 .invitation-petals:before,
 .invitation-petals:after {
@@ -1149,11 +1174,7 @@ figure {
 }
 
 #invitation-content > .invitation-shade {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: linear-gradient(180deg, rgba(31, 22, 30, 0.48), rgba(31, 22, 30, 0.62));
+  display: none;
 }
 
 #invitation-content :where(p, h3, h4, h5, h6, span, strong, label, li):not(.btn) {
