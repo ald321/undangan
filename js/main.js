@@ -281,7 +281,7 @@
 	};
 
 	var weddingCountdown = function() {
-		var countDownDate = new Date("Dec 28, 2026 09:00:00").getTime();
+		var countDownDate = new Date("Aug 29, 2026 08:00:00").getTime();
 		var dayElement = document.getElementById("days");
 		var hourElement = document.getElementById("hours");
 		var minuteElement = document.getElementById("minutes");
