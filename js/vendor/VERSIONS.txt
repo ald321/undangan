@@ -1,0 +1,6 @@
+Vendor libraries (local copies for index.html + invitation.html)
+- gsap.min.js — GSAP 3.12.5
+- ScrollTrigger.min.js — GSAP ScrollTrigger 3.12.5
+- tsparticles.bundle.min.js — tsParticles 3.5.0
+- swiper-bundle.min.js — Swiper 11.1.14
+- css/vendor/swiper-bundle.min.css — Swiper 11.1.14

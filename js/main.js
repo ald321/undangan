@@ -2,6 +2,12 @@
 	
 	'use strict';
 
+	var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (reducedMotion) {
+		document.documentElement.classList.add('reduce-motion');
+	}
+
 	// iPad and iPod detection	
 	var isiPad = function(){
 		return (navigator.platform.indexOf("iPad") != -1);
@@ -22,9 +28,12 @@
 		}
 	};
 
-	// Animations
-
 	var contentWayPoint = function() {
+		if (window.NuptialFX && window.NuptialFX.ScrollAnimations) {
+			window.NuptialFX.ScrollAnimations.init();
+			return;
+		}
+
 		var i = 0;
 		$('.animate-box').waypoint( function( direction ) {
 
@@ -49,11 +58,49 @@
 
 		} , { offset: '85%' } );
 	};
+
+	var initCoverEffects = function() {
+		var petalsTarget = document.querySelector('#petals-canvas');
+		var scrollFx = window.NuptialFX && window.NuptialFX.ScrollAnimations;
+		var petalsFx = window.NuptialFX && window.NuptialFX.Petals;
+
+		if (petalsTarget && petalsFx) {
+			petalsFx.init('#petals-canvas', 'cover');
+		}
+
+		if (scrollFx) {
+			scrollFx.initCoverIntro(function (revealGuest) {
+				window.NuptialFX._revealCoverGuest = revealGuest;
+			});
+		}
+	};
+
+	var initInvitationEffects = function() {
+		var petalsTarget = document.querySelector('#petals-canvas-invite');
+		var petalsFx = window.NuptialFX && window.NuptialFX.Petals;
+		var galleryFx = window.NuptialFX && window.NuptialFX.GallerySwiper;
+		var scrollFx = window.NuptialFX && window.NuptialFX.ScrollAnimations;
+
+		if (petalsTarget && petalsFx) {
+			petalsFx.init('#petals-canvas-invite', 'invitation');
+		}
+
+		if (galleryFx) {
+			galleryFx.init();
+		}
+
+		if (scrollFx) {
+			setTimeout(function () {
+				scrollFx.refresh();
+			}, 400);
+		}
+	};
 	
 	var invitationGate = function() {
 		var cover = $('#cover');
 		var content = $('#invitation-content');
 		var openButton = $('#open-invitation');
+		var scrollFx = window.NuptialFX && window.NuptialFX.ScrollAnimations;
 
 		if (!cover.length || !openButton.length) {
 			return;
@@ -73,19 +120,25 @@
 				}
 
 				openButton.addClass('is-opening');
-				cover.addClass('cover-closing');
 
 				if (window.location.search && destination.indexOf('?') === -1) {
 					destination += window.location.search;
 				}
 
-				try {
-					sessionStorage.setItem('invitationOpened', 'true');
-				} catch (error) {}
+				var redirect = function() {
+					try {
+						sessionStorage.setItem('invitationOpened', 'true');
+					} catch (error) {}
 
-				setTimeout(function() {
 					window.location.href = destination;
-				}, 950);
+				};
+
+				if (scrollFx) {
+					scrollFx.playCoverClose({ onComplete: redirect });
+				} else {
+					cover.addClass('cover-closing');
+					setTimeout(redirect, 950);
+				}
 			});
 			return;
 		}
@@ -103,23 +156,37 @@
 			openButton.addClass('is-opening');
 			playWeddingMusic();
 
-			content
-				.css('opacity', 0)
-				.show()
-				.addClass('invitation-opening');
-			cover.addClass('cover-closing');
-
-			setTimeout(function() {
-				cover.hide();
-				content.css('opacity', '').removeClass('invitation-opening');
-
-				if (typeof Waypoint !== 'undefined' && Waypoint.refreshAll) {
+			var finishOpen = function() {
+				if (scrollFx) {
+					scrollFx.refresh();
+				} else if (typeof Waypoint !== 'undefined' && Waypoint.refreshAll) {
 					Waypoint.refreshAll();
 				}
+
 				$('html, body').animate({
 					scrollTop: content.offset().top
 				}, 700, 'easeInOutExpo');
-			}, 950);
+			};
+
+			if (scrollFx) {
+				scrollFx.playInlineOpen({
+					cover: cover,
+					content: content,
+					onMidpoint: finishOpen
+				});
+			} else {
+				content
+					.css('opacity', 0)
+					.show()
+					.addClass('invitation-opening');
+				cover.addClass('cover-closing');
+
+				setTimeout(function() {
+					cover.hide();
+					content.css('opacity', '').removeClass('invitation-opening');
+					finishOpen();
+				}, 950);
+			}
 		});
 	};
 
@@ -255,8 +322,17 @@
 		var params = new URLSearchParams(window.location.search);
 		var guestCode = (params.get('to') || params.get('code') || params.get('guest') || '').trim();
 
+		var setGuestName = function(name) {
+			guestName.text(name);
+
+			if (window.NuptialFX && typeof window.NuptialFX._revealCoverGuest === 'function') {
+				window.NuptialFX._revealCoverGuest();
+				window.NuptialFX._revealCoverGuest = null;
+			}
+		};
+
 		if (!guestCode) {
-			guestName.text(fallbackName);
+			setGuestName(fallbackName);
 			return;
 		}
 
@@ -273,10 +349,10 @@
 					return item.code && item.code.toLowerCase() === normalizedCode;
 				});
 
-				guestName.text(guest && guest.name ? guest.name : fallbackName);
+				setGuestName(guest && guest.name ? guest.name : fallbackName);
 			})
 			.catch(function() {
-				guestName.text(fallbackName);
+				setGuestName(fallbackName);
 			});
 	};
 
@@ -374,9 +450,14 @@
 
 		parallax();
 		contentWayPoint();
-		personalizedGuest();
 		invitationBackLink();
 		invitationGate();
+
+		if ($('#cover').length) {
+			initCoverEffects();
+		}
+
+		personalizedGuest();
 		musicToggle();
 		resumeMusicAfterCover();
 		startMusicOnFirstInteraction();
@@ -384,6 +465,10 @@
 		smoothScroll();
 		staticForms();
 		copyGiftNumber();
+
+		if ($('#invitation-content').length) {
+			initInvitationEffects();
+		}
 	});
 
 

@@ -528,6 +528,28 @@ figure {
 	}
 }
 
+.petals-layer {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.js-petals-active {
+	.falling-petals,
+	.invitation-petals {
+		display: none;
+	}
+}
+
+html.reduce-motion {
+	.falling-petals,
+	.invitation-petals,
+	.petals-layer {
+		display: none !important;
+	}
+}
+
 @keyframes skyBreathe {
 	0%, 100% {
 		background-size: 100% 100%;
@@ -1177,6 +1199,129 @@ figure {
 	background: rgba(72, 38, 43, .22) !important;
 }
 
+// Unified invitation cards (profile, events, panels)
+#invitation-content {
+	.couple-profile > div:not(.col-md-2),
+	.wedding-events,
+	.panel-default {
+		background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 248, 0.78));
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(246, 157, 157, 0.22);
+		border-radius: 22px;
+		box-shadow: 0 18px 50px rgba(72, 38, 43, 0.12);
+		overflow: hidden;
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+
+	@media screen and (min-width: 769px) {
+		.couple-profile > div:not(.col-md-2):hover,
+		.wedding-events:hover,
+		.panel-default:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 22px 56px rgba(72, 38, 43, 0.16);
+		}
+	}
+
+	.panel-default {
+		border: 1px solid transparent;
+		background:
+			linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 248, 0.78)) padding-box,
+			linear-gradient(135deg, rgba(246, 157, 157, 0.35), rgba(255, 243, 220, 0.55)) border-box;
+		margin-bottom: 20px;
+
+		.panel-body {
+			padding: 28px 22px;
+		}
+
+		h3 {
+			font-family: $font-secondary;
+			color: #4f3f42;
+			font-weight: 400;
+			letter-spacing: 0.3px;
+			padding-bottom: 12px;
+			margin-bottom: 12px;
+			border-bottom: 1px solid rgba(246, 157, 157, 0.12);
+		}
+
+		p {
+			color: #6f6464;
+			font-size: 15px;
+			line-height: 1.8;
+		}
+	}
+
+	.couple-profile,
+	.wedding-events {
+		color: #6b5f5f;
+	}
+
+	.couple-profile > div:not(.col-md-2) {
+		padding: 32px 24px 28px !important;
+		color: #6b5f5f;
+	}
+
+	.couple-profile h3,
+	.wedding-events .desc h3 {
+		font-family: $font-secondary;
+		color: #4f3f42;
+		font-weight: 400;
+		letter-spacing: 0.3px;
+	}
+
+	.couple-profile h3 {
+		margin-top: 16px;
+		padding-top: 16px;
+		border-top: 1px solid rgba(246, 157, 157, 0.15);
+	}
+
+	.profile-photo-frame {
+		margin-bottom: 8px;
+	}
+
+	.couple-parent,
+	.wedding-events .desc p {
+		color: #6f6464;
+		font-size: 15px;
+		font-weight: 400;
+		line-height: 1.8;
+	}
+
+	.wedding-events .desc {
+		border-top: 1px solid rgba(246, 157, 157, 0.12);
+	}
+
+	.wedding-events .desc h3 {
+		margin-bottom: 18px;
+	}
+
+	.wedding-events .desc .event-time strong {
+		color: #4f3f42;
+		font-size: 15px;
+		font-weight: 700;
+	}
+
+	.wedding-events .desc .event-venue {
+		color: #4f3f42;
+		font-size: 16px;
+		font-weight: 700;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.couple-profile > div:not(.col-md-2),
+		.wedding-events,
+		.panel-default {
+			transition: none;
+		}
+
+		.couple-profile > div:not(.col-md-2):hover,
+		.wedding-events:hover,
+		.panel-default:hover {
+			transform: none;
+		}
+	}
+}
+
 .fh5co-section-gray{
 	background: $brand-light-color;
 }
@@ -1197,9 +1342,69 @@ figure {
 }
 
 #fh5co-couple{
+	.profile-photo-frame {
+		position: relative;
+		display: inline-block;
+		width: min(240px, 82vw);
+		aspect-ratio: 682 / 1024;
+		margin: 0 auto 20px;
+		overflow: hidden;
+
+		&::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: url('../images/profile-frame-floral.png') center / 100% 100% no-repeat;
+			pointer-events: none;
+			z-index: 2;
+		}
+	}
+
+	.profile-photo {
+		position: absolute;
+		top: 22.5%;
+		left: 8.65%;
+		width: 79.6%;
+		height: 42%;
+		max-width: 79.6%;
+		max-height: 42%;
+		z-index: 1;
+		display: block;
+		object-fit: cover;
+		object-position: center center;
+		margin: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	.couple-profile .profile-photo {
+		width: 79.6%;
+		height: 42%;
+		max-width: 79.6%;
+		max-height: 42%;
+	}
+
+	.couple-profile > div:not(.col-md-2) {
+		position: relative;
+	}
+
+	.couple-profile > div:not(.col-md-2):before,
+	.couple-profile > div:not(.col-md-2):after {
+		display: none;
+	}
+
+	.couple-profile img:not(.profile-photo) {
+		border-radius: 0;
+		width: 100%;
+		height: auto;
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		background: none;
+	}
+
 	img{
 		margin-bottom: 20px;
-		@include border-radius(50%);
 	}
 	h3{
 		font-size: 30px;
@@ -1267,6 +1472,10 @@ figure {
 //Events
 .wedding-events{
 	background: $brand-white;
+	border-radius: 22px;
+	color: #848484;
+	overflow: hidden;
+	box-shadow: 0 18px 50px rgba(72, 38, 43, 0.12);
 	.ceremony-bg{
 		background-size: cover;
 		background-position: center center;
@@ -1378,6 +1587,47 @@ figure {
 }
 
 //Gallery
+.gallery-swiper-wrap {
+	display: none;
+	margin-bottom: 24px;
+}
+
+.gallery-swiper {
+	overflow: visible;
+	padding-bottom: 36px;
+
+	.swiper-slide {
+		height: auto;
+	}
+
+	.gallery-img {
+		display: block;
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 12px 32px rgba(31, 22, 30, 0.18);
+
+		img {
+			width: 100%;
+			aspect-ratio: 4 / 3;
+			object-fit: cover;
+			display: block;
+		}
+	}
+
+	.swiper-pagination-bullet {
+		background: rgba(255, 255, 255, 0.55);
+		opacity: 1;
+	}
+
+	.swiper-pagination-bullet-active {
+		background: $brand-primary;
+	}
+}
+
+.gallery-grid-desktop {
+	display: block;
+}
+
 .gallery{
 	margin-bottom: 30px;
 	.gallery-img{
@@ -1869,9 +2119,29 @@ figure {
 	}
 
 	#fh5co-couple img {
-		max-width: 180px;
+		max-width: none;
 		margin-left: auto;
 		margin-right: auto;
+	}
+
+	#fh5co-couple .profile-photo-frame {
+		width: min(210px, 78vw);
+	}
+
+	#invitation-content .couple-profile > div:not(.col-md-2) {
+		padding: 24px 16px 22px !important;
+		margin-bottom: 18px;
+	}
+
+	#invitation-content .panel-default .panel-body {
+		padding: 22px 16px;
+	}
+
+	#fh5co-couple .couple-profile .profile-photo {
+		width: 79.6%;
+		height: 42%;
+		max-width: 79.6%;
+		max-height: 42%;
 	}
 
 	.heading-section {
@@ -1938,6 +2208,14 @@ figure {
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
+	}
+
+	.gallery-swiper-wrap {
+		display: block;
+	}
+
+	.gallery-grid-desktop {
+		display: none;
 	}
 }
 

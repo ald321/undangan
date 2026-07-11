@@ -1,48 +1,58 @@
-$(document).ready(function() {
-  // MagnificPopup
-	var magnifPopup = function() {
-		$('.image-popup').magnificPopup({
-			type: 'image',
-			removalDelay: 300,
-			mainClass: 'mfp-with-zoom',
-			gallery:{
-				enabled:true
-			},
-			zoom: {
-				enabled: true, // By default it's false, so don't forget to enable it
+;(function (window, $) {
+	'use strict';
 
-				duration: 300, // duration of the effect, in milliseconds
-				easing: 'ease-in-out', // CSS transition easing function
-
-				// The "opener" function should return the element from which popup will be zoomed in
-				// and to which popup will be scaled down
-				// By defailt it looks for an image tag:
-				opener: function(openerElement) {
-				// openerElement is the element on which popup was initialized, in this case its <a> tag
-				// you don't need to add "opener" option if this code matches your needs, it's defailt one.
+	var popupOptions = {
+		type: 'image',
+		removalDelay: 300,
+		mainClass: 'mfp-with-zoom',
+		gallery: {
+			enabled: true
+		},
+		zoom: {
+			enabled: true,
+			duration: 300,
+			easing: 'ease-in-out',
+			opener: function (openerElement) {
 				return openerElement.is('img') ? openerElement : openerElement.find('img');
-				}
 			}
+		}
+	};
+
+	window.initNuptialMagnificPopup = function (parentSelector) {
+		if (!$ || !$.fn.magnificPopup) {
+			return;
+		}
+
+		var scope = parentSelector ? $(parentSelector) : $(document.body);
+		var targets = scope.find('.image-popup');
+
+		if (!targets.length) {
+			return;
+		}
+
+		targets.each(function () {
+			var $el = $(this);
+			if ($el.data('mfp-bound')) {
+				return;
+			}
+
+			$el.magnificPopup(popupOptions);
+			$el.data('mfp-bound', true);
 		});
 	};
 
-	var magnifVideo = function() {
+	$(document).ready(function () {
+		if (!$('.gallery-swiper').length) {
+			window.initNuptialMagnificPopup();
+		}
+
 		$('.popup-youtube, .popup-vimeo, .popup-gmaps').magnificPopup({
-        disableOn: 700,
-        type: 'iframe',
-        mainClass: 'mfp-fade',
-        removalDelay: 160,
-        preloader: false,
-
-        fixedContentPos: false
-    });
-	};
-
-	
-
-
-	// Call the functions 
-	magnifPopup();
-	magnifVideo();
-
-});
+			disableOn: 700,
+			type: 'iframe',
+			mainClass: 'mfp-fade',
+			removalDelay: 160,
+			preloader: false,
+			fixedContentPos: false
+		});
+	});
+})(window, window.jQuery);

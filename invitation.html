@@ -31,6 +31,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/superfish.css">
 	<link rel="stylesheet" href="css/magnific-popup.css">
+	<link rel="stylesheet" href="css/vendor/swiper-bundle.min.css">
 	<link rel="stylesheet" href="css/style.css">
 
 	<script src="js/modernizr-2.6.2.min.js"></script>
@@ -45,6 +46,7 @@
 		<div id="invitation-content" class="invitation-opening">
 		<a href="index.html" id="back-to-cover" class="invitation-back" aria-label="Kembali ke cover">&larr; Cover</a>
 		<div class="invitation-petals" aria-hidden="true"></div>
+		<div id="petals-canvas-invite" class="petals-layer" aria-hidden="true"></div>
 		<div class="invitation-shade" aria-hidden="true"></div>
 		<span id="profil"></span>
 		<div id="fh5co-couple" class="fh5co-section-gray">
@@ -58,13 +60,17 @@
 				<div class="row row-bottom-padded-md animate-box">
 					<div class="col-md-10 col-md-offset-1 text-center couple-profile">
 						<div class="col-md-5 col-sm-5 col-xs-5 nopadding">
-							<img src="images/bride.jpg" class="img-responsive" alt="Foto Dewi Sani Sukma">
+							<div class="profile-photo-frame">
+								<img src="images/bride.jpg" class="profile-photo img-responsive" alt="Foto Dewi Sani Sukma">
+							</div>
 							<h3>Dewi Sani Sukma, S. Si.</h3>
 							<p class="couple-parent">Putri Kedua dari<br>Bapak Surasa<br>&amp;<br>Ibu Margini</p>
 						</div>
 						<div class="col-md-2 col-sm-2 col-xs-2 nopadding"><h2 class="amp-center"><i class="icon-heart"></i></h2></div>
 						<div class="col-md-5 col-sm-5 col-xs-5 nopadding">
-							<img src="images/groom.jpg" class="img-responsive" alt="Foto Muhammad Aldi Pamungkas">
+							<div class="profile-photo-frame">
+								<img src="images/groom.jpg" class="profile-photo img-responsive" alt="Foto Muhammad Aldi Pamungkas">
+							</div>
 							<h3>Muhammad Aldi Pamungkas, S. Kom.</h3>
 							<p class="couple-parent">Putra Ketiga dari<br>Bapak H. Mistar Tamsi<br>&amp;<br>Ibu Hj. Endah Sumerkarsih, S. Pd.</p>
 						</div>
@@ -165,28 +171,70 @@
 						<p>Momen kebersamaan kami sebelum menuju hari bahagia.</p>
 					</div>
 				</div>
-				<div class="row">
+				<div class="gallery-swiper-wrap animate-box">
+					<div class="gallery-swiper swiper">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-1.jpg">
+									<img src="images/gallery-1.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 1">
+								</a>
+							</div>
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-2.jpg">
+									<img src="images/gallery-2.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 2">
+								</a>
+							</div>
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-3.jpg">
+									<img src="images/gallery-3.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 3">
+								</a>
+							</div>
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-4.jpg">
+									<img src="images/gallery-4.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 4">
+								</a>
+							</div>
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-5.jpg">
+									<img src="images/gallery-5.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 5">
+								</a>
+							</div>
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-6.jpg">
+									<img src="images/gallery-6.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 6">
+								</a>
+							</div>
+							<div class="swiper-slide">
+								<a class="gallery-img image-popup" href="images/gallery-7.jpg">
+									<img src="images/gallery-7.jpg" loading="lazy" class="img-responsive" alt="Galeri foto 7">
+								</a>
+							</div>
+						</div>
+						<div class="swiper-pagination"></div>
+					</div>
+				</div>
+				<div class="gallery-grid-desktop row">
 					<div class="col-md-4">
 						<div class="gallery animate-box">
 							<a class="gallery-img image-popup" href="images/gallery-1.jpg"><img src="images/gallery-1.jpg" class="img-responsive" alt="Galeri foto 1"></a>
 						</div>
 						<div class="gallery animate-box">
-							<a class="gallery-img image-popup" href="images/gallery-7.jpg"><img src="images/gallery-7.jpg" class="img-responsive" alt="Galeri foto 2"></a>
+							<a class="gallery-img image-popup" href="images/gallery-7.jpg"><img src="images/gallery-7.jpg" class="img-responsive" alt="Galeri foto 7"></a>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="gallery animate-box">
-							<a class="gallery-img image-popup" href="images/gallery-6.jpg"><img src="images/gallery-6.jpg" class="img-responsive" alt="Galeri foto 3"></a>
+							<a class="gallery-img image-popup" href="images/gallery-6.jpg"><img src="images/gallery-6.jpg" class="img-responsive" alt="Galeri foto 6"></a>
 						</div>
 						<div class="gallery animate-box">
-							<a class="gallery-img image-popup" href="images/gallery-2.jpg"><img src="images/gallery-2.jpg" class="img-responsive" alt="Galeri foto 4"></a>
+							<a class="gallery-img image-popup" href="images/gallery-2.jpg"><img src="images/gallery-2.jpg" class="img-responsive" alt="Galeri foto 2"></a>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="gallery animate-box">
-							<a class="gallery-img image-popup" href="images/gallery-3.jpg"><img src="images/gallery-3.jpg" class="img-responsive" alt="Galeri foto 5"></a>
+							<a class="gallery-img image-popup" href="images/gallery-3.jpg"><img src="images/gallery-3.jpg" class="img-responsive" alt="Galeri foto 3"></a>
 						</div>
-						<div class="panel panel-default text-center animate-box">
+						<div class="panel panel-default text-center animate-box gallery-video-panel">
 							<div class="panel-body">
 								<h3>Video Prewedding</h3>
 								<p>Tambahkan link video YouTube atau file video prewedding di bagian ini.</p>
@@ -347,6 +395,13 @@
 	<script src="js/superfish.js"></script>
 	<script src="js/jquery.magnific-popup.min.js"></script>
 	<script src="js/magnific-popup-options.js"></script>
+	<script src="js/vendor/gsap.min.js"></script>
+	<script src="js/vendor/ScrollTrigger.min.js"></script>
+	<script src="js/vendor/tsparticles.bundle.min.js"></script>
+	<script src="js/vendor/swiper-bundle.min.js"></script>
+	<script src="js/effects/scroll-animations.js"></script>
+	<script src="js/effects/petals.js"></script>
+	<script src="js/effects/gallery-swiper.js"></script>
 	<script src="js/main.js"></script>
 	</body>
 </html>
