@@ -6,6 +6,7 @@ $border-radius-base:  4px;
 $padding-base-vertical: 14px;
 
 $brand-primary: #F69D9D;
+$header-maroon: #8b2942;
  
 
 $brand-white: #fff;
@@ -338,6 +339,11 @@ figure {
 		letter-spacing: 2px;
 		text-transform: none;
 	}
+
+	.fh5co-cover .display-tc h2 {
+		font-family: "Times New Roman", Times, serif;
+		font-weight: 400 !important;
+	}
 }
 
 .viding-scene {
@@ -393,6 +399,24 @@ figure {
 	transform: translateX(-50%) translateY(100px) scale(1.04);
 	animation: vidingLandRise 1.8s ease-out .35s forwards;
 	z-index: 4;
+}
+
+.cover-joglo {
+	left: 50%;
+	bottom: 6%;
+	width: min(528px, 79.2vw);
+	max-height: 60.5vh;
+	height: auto;
+	object-fit: contain;
+	transform: translateX(-50%) translateY(24px);
+	opacity: 0;
+	z-index: 5;
+	filter: drop-shadow(0 14px 28px rgba(72, 38, 43, .28));
+	animation: coverJogloRise 2s ease-out .5s forwards;
+}
+
+.floral-cover .viding-rose-center {
+	display: none;
 }
 
 .viding-lotus {
@@ -584,6 +608,17 @@ html.reduce-motion {
 	}
 }
 
+@keyframes coverJogloRise {
+	0% {
+		opacity: 0;
+		transform: translateX(-50%) translateY(24px);
+	}
+	100% {
+		opacity: 0.5;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
 @keyframes vidingBloom {
 	0% {
 		opacity: 0;
@@ -757,6 +792,11 @@ html.reduce-motion {
 		left: 50%;
 		width: 31vw;
 	}
+	.cover-joglo {
+		width: min(374px, 93.5vw);
+		bottom: 4%;
+		max-height: 52.8vh;
+	}
 	.viding-rose-right {
 		left: 57%;
 		width: 21vw;
@@ -805,6 +845,11 @@ html.reduce-motion {
 			animation: none;
 			background-position: center bottom;
 		}
+	}
+	.cover-joglo {
+		animation: none;
+		opacity: 0.5;
+		transform: translateX(-50%) translateY(0);
 	}
 }
 
@@ -1102,81 +1147,515 @@ html.reduce-motion {
 #invitation-content {
 	position: relative;
 	isolation: isolate;
-	overflow: hidden;
-	background: #f8e5d7 url(../images/viding-sky.webp) center top / cover fixed no-repeat;
-	animation: skyBreathe 18s ease-in-out infinite;
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 100vh;
+	height: 100dvh;
+	background: #fdf2f0;
+	scroll-snap-type: y proximity;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+}
+
+#invitation-content.invitation-opening {
+	animation: invitationFadeIn 850ms ease-out forwards;
 }
 
 #invitation-content:before,
 #invitation-content:after {
-	content: "";
-	position: fixed;
-	pointer-events: none;
-	z-index: 0;
-}
-
-#invitation-content:before {
-	inset: 0;
-	background: url(../images/viding-texture.webp) center top / cover fixed no-repeat;
-	opacity: .18;
-	mix-blend-mode: multiply;
-}
-
-#invitation-content:after {
-	left: 50%;
-	right: auto;
-	bottom: -3%;
-	width: 160vw;
-	height: 100vh;
-	transform: translateX(-50%);
-	background: url(../images/viding-land.webp) center bottom / 100% auto no-repeat;
-	opacity: 1;
-}
-
-#invitation-content > * {
-	position: relative;
-	z-index: 1;
+	display: none;
 }
 
 #invitation-content > .invitation-petals,
 .invitation-petals:before,
 .invitation-petals:after {
-	content: "";
-	position: fixed;
-	inset: -120px 0 0 0;
-	pointer-events: none;
-	z-index: 0;
-	background-image:
-		radial-gradient(circle, rgba(246, 157, 157, .62) 0 4px, transparent 5px),
-		radial-gradient(circle, rgba(255, 255, 255, .74) 0 3px, transparent 4px);
-	background-size: 190px 210px, 260px 240px;
-	animation: petalsDrift 18s linear infinite;
+	display: none;
 }
 
-.invitation-petals:before {
-	opacity: .62;
-	transform: translateX(80px);
-	animation-duration: 24s;
-	animation-delay: -8s;
+#invitation-content > .invitation-shade,
+#petals-canvas-invite {
+	display: none !important;
 }
 
-.invitation-petals:after {
-	opacity: .42;
-	transform: translateX(-120px);
-	animation-duration: 30s;
-	animation-delay: -14s;
+body.invitation-page {
+	overflow: hidden;
+	height: 100%;
+	margin: 0;
+
+	#fh5co-wrapper,
+	#fh5co-page {
+		height: 100%;
+		overflow: hidden;
+	}
+
+	#invitation-content {
+		height: 100%;
+		min-height: 0;
+	}
 }
 
-#invitation-content > .invitation-shade {
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: 0;
-	background: linear-gradient(180deg, rgba(31, 22, 30, .48), rgba(31, 22, 30, .62));
+html.invitation-page {
+	height: 100%;
+}
+
+.invitation-slide {
+	min-height: 100vh;
+	min-height: 100dvh;
+	width: 100%;
+	flex-shrink: 0;
+	scroll-snap-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 72px 16px 40px;
+	box-sizing: border-box;
+
+	&.invitation-slide-tall {
+		align-items: flex-start;
+		padding-top: 84px;
+		padding-bottom: 48px;
+		scroll-snap-align: start;
+	}
+
+	&.invitation-slide-footer {
+		min-height: 72vh;
+		padding-bottom: 56px;
+	}
+
+	&.invitation-slide-closing-bg {
+		position: relative;
+		background: transparent;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		.closing-floral-frame {
+			position: relative;
+			z-index: 1;
+			width: min(420px, 90vw);
+			height: min(calc(100dvh - 96px), 820px);
+			box-sizing: border-box;
+			display: flex;
+			align-items: stretch;
+			justify-content: center;
+			padding: 5.5vh 5vw 4.5vh;
+			background: url('../images/closing-floral-bg.png') center center / 100% 100% no-repeat;
+		}
+
+		.closing-inner {
+			position: relative;
+			z-index: 1;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.closing-photo-wrap {
+			position: relative;
+			z-index: 2;
+			flex: 1;
+			width: 100%;
+			min-height: 0;
+			margin: 0;
+			padding: 10px;
+			box-sizing: border-box;
+			background: linear-gradient(160deg, #edd080 0%, #b8860b 45%, #d4af37 100%);
+			box-shadow: 0 14px 36px rgba(72, 38, 43, 0.2);
+			border-radius: 2px;
+		}
+
+		.closing-photo-media {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			min-height: 0;
+			overflow: hidden;
+			border-radius: 1px;
+
+			&::after {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.31);
+				pointer-events: none;
+				z-index: 1;
+			}
+		}
+
+		.closing-photo {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			object-position: center 35%;
+			filter: brightness(0.41);
+		}
+
+		.closing-content {
+			position: absolute;
+			inset: 0;
+			z-index: 2;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 24px 18px;
+			text-align: center;
+			background: transparent;
+		}
+	}
+
+	&.is-active .invitation-card {
+		box-shadow: 0 26px 64px rgba(72, 38, 43, 0.14);
+	}
+
+	&.is-active .invitation-card.invitation-card-closing {
+		box-shadow: none;
+	}
+}
+
+.invitation-card {
+	width: min(920px, 100%);
+	max-width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+	background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 250, 248, 0.94));
+	border: 1px solid rgba(246, 157, 157, 0.28);
+	border-radius: 24px;
+	padding: 36px 24px 32px;
+	box-shadow: 0 22px 56px rgba(72, 38, 43, 0.12);
+	will-change: transform, opacity;
+	transition: box-shadow 0.35s ease;
+
+	.invitation-section-body,
+	.container {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.container {
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	&.invitation-card-compact {
+		padding: 32px 24px;
+	}
+
+	&.invitation-card-closing {
+		position: relative;
+		background: transparent !important;
+		border: none;
+		box-shadow: none;
+
+		&::before {
+			display: none;
+		}
+
+		.invitation-section-body {
+			position: relative;
+			z-index: 1;
+		}
+	}
+}
+
+#invitation-content {
+	.invitation-card.invitation-card-photo {
+		padding: 0;
+		overflow: hidden;
+		width: min(520px, 92vw);
+	}
+
+	.akan-menikah-photo {
+		line-height: 0;
+	}
+
+	.akan-menikah-img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 24px;
+		object-fit: cover;
+	}
+
+	.invitation-slide-scenic-bg {
+		position: relative;
+		background: url('../images/journey-section-bg.png') center center / cover no-repeat;
+		background-color: #f5e6e4;
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: rgba(255, 250, 248, 0.12);
+			pointer-events: none;
+			z-index: 0;
+		}
+
+		> .invitation-card {
+			position: relative;
+			z-index: 1;
+		}
+	}
+
+	.invitation-card.invitation-card-journey {
+		width: min(380px, 92vw);
+		padding: 56px 28px 40px;
+		background: linear-gradient(180deg, #fce4ec 0%, #fdf2f0 100%) !important;
+		border: none;
+		box-shadow: 0 22px 56px rgba(72, 38, 43, 0.14);
+		border-radius: 50% 50% 24px 24px / 22% 22% 24px 24px;
+	}
+
+	.journey-photo-wrap {
+		text-align: center;
+		margin-bottom: 28px;
+	}
+
+	.journey-photo-frame {
+		display: inline-block;
+		width: min(200px, 62vw);
+		height: min(260px, 80vw);
+		padding: 10px;
+		border-radius: 50%;
+		background: linear-gradient(145deg, #e8c872, #b8860b, #d4af37);
+		box-shadow: 0 8px 24px rgba(120, 90, 20, 0.25);
+		overflow: hidden;
+	}
+
+	.journey-photo {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 38%;
+		border-radius: 50%;
+		border: 3px solid #f5e6c8;
+	}
+
+	.journey-title {
+		font-family: 'Allura', cursive;
+		font-size: clamp(36px, 8vw, 48px);
+		color: $header-maroon;
+		text-align: center;
+		margin: 0 0 24px;
+		font-weight: 400;
+	}
+
+	.journey-quote {
+		margin: 0;
+		padding: 0;
+		border: none;
+		text-align: center;
+
+		p {
+			font-family: "Times New Roman", Times, serif;
+			font-size: 15px;
+			line-height: 1.85;
+			color: #5a5a5a;
+			margin-bottom: 16px;
+		}
+
+		cite {
+			display: block;
+			font-family: "Times New Roman", Times, serif;
+			font-style: normal;
+			font-size: 14px;
+			color: #848484;
+		}
+	}
+
+	.invitation-slide-countdown {
+		text-align: center;
+	}
+
+	.countdown-card {
+		position: relative;
+		z-index: 1;
+		width: min(440px, calc(100% - 32px));
+		margin: 0 auto;
+		padding: 36px 28px 40px;
+		background: rgba(255, 252, 251, 0.36);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		border-radius: 24px;
+		box-shadow: 0 18px 48px rgba(72, 38, 43, 0.08);
+		box-sizing: border-box;
+	}
+
+	.countdown-section {
+		position: relative;
+		padding: 0;
+		margin: 0;
+		text-align: center;
+	}
+
+	.countdown-save-title {
+		font-family: "Times New Roman", Times, serif;
+		font-size: clamp(18px, 4.2vw, 24px);
+		font-weight: 400;
+		letter-spacing: 0.28em;
+		text-transform: uppercase;
+		color: $header-maroon;
+		margin: 0 0 22px;
+	}
+
+	.countdown-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 18px 14px;
+		margin-bottom: 24px;
+	}
+
+	.countdown-cell {
+		text-align: center;
+	}
+
+	.countdown-value {
+		display: block;
+		font-family: "Times New Roman", Times, serif;
+		font-size: clamp(34px, 8.5vw, 50px);
+		line-height: 1;
+		color: #6b2438;
+		font-weight: 400;
+	}
+
+	.countdown-label {
+		display: block;
+		margin-top: 6px;
+		font-family: "Times New Roman", Times, serif;
+		font-size: 14px;
+		color: #6b2438;
+		letter-spacing: 0.02em;
+	}
+
+	.btn-countdown-calendar {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		width: 100%;
+		max-width: 280px;
+		padding: 12px 20px;
+		border-radius: 999px;
+		background: linear-gradient(90deg, #6b2438 0%, #c96b7a 100%);
+		color: #fff;
+		font-family: "Times New Roman", Times, serif;
+		font-size: 11px;
+		font-weight: 400;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		text-decoration: none;
+		box-shadow: 0 10px 28px rgba(107, 36, 56, 0.28);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+		&:hover,
+		&:focus {
+			color: #fff;
+			text-decoration: none;
+			transform: translateY(-1px);
+			box-shadow: 0 14px 32px rgba(107, 36, 56, 0.34);
+		}
+
+		.icon-calendar {
+			font-size: 16px;
+		}
+	}
+
+	.countdown-message {
+		margin: 16px 0 0;
+		font-family: "Times New Roman", Times, serif;
+		font-size: 13px;
+		color: #6b2438;
+		opacity: 0.85;
+	}
+
+	#fh5co-countdown.countdown-section {
+		padding: 0;
+		margin: 0;
+		background: transparent !important;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	#invitation-content {
+		scroll-snap-type: none;
+	}
+
+	.invitation-slide {
+		min-height: auto;
+		padding: 64px 12px 32px;
+		scroll-snap-align: none;
+
+		&.invitation-slide-tall {
+			padding-top: 72px;
+		}
+	}
+
+	.invitation-card {
+		padding: 28px 18px 24px;
+		border-radius: 20px;
+	}
+
+	#invitation-content .invitation-card.invitation-card-photo {
+		width: min(340px, 88vw);
+		border-radius: 20px;
+		padding: 0;
+	}
+
+	#invitation-content .akan-menikah-img {
+		border-radius: 20px;
+	}
+
+	#invitation-content .invitation-card.invitation-card-journey {
+		width: min(340px, 90vw);
+		padding: 48px 22px 36px;
+		border-radius: 50% 50% 20px 20px / 20% 20% 20px 20px;
+	}
+
+	#invitation-content .journey-quote p {
+		font-size: 14px;
+	}
+
+	#invitation-content .countdown-card {
+		width: calc(100% - 24px);
+		padding: 28px 20px 32px;
+		border-radius: 20px;
+	}
+
+	#invitation-content .countdown-save-title {
+		margin-bottom: 18px;
+		letter-spacing: 0.2em;
+	}
+
+	#invitation-content .countdown-grid {
+		gap: 14px 10px;
+		margin-bottom: 20px;
+	}
+
+	#invitation-content .countdown-label {
+		font-size: 13px;
+	}
+
+	#invitation-content .btn-countdown-calendar {
+		font-size: 10px;
+		padding: 11px 16px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.invitation-page #invitation-content {
+		scroll-behavior: auto;
+	}
 }
 
 #invitation-content :where(p, h3, h4, h5, h6, span, strong, label, li):not(.btn) {
-	color: #fff;
+	color: $brand-darker;
 }
 
 #invitation-content :where(.panel, .wedding-events, .couple-wrap, .fh5co-blog) :where(p, h3, h4, h5, h6, span, strong, label, li) {
@@ -1185,7 +1664,112 @@ html.reduce-motion {
 
 #invitation-content .heading-section p,
 #invitation-content #countdown-message {
-	color: rgba(255, 255, 255, .9);
+	color: $brand-lighter;
+}
+
+#invitation-content .heading-section h2,
+#invitation-content #footer h2 {
+	font-family: "Times New Roman", Times, serif;
+	font-weight: 400;
+	color: $header-maroon;
+}
+
+#invitation-content #footer p {
+	color: $brand-lighter;
+}
+
+#invitation-content .closing-content {
+	padding: 24px 18px;
+}
+
+#invitation-content .closing-title {
+	margin: 0 0 12px;
+	font-family: "Times New Roman", Times, serif;
+	font-size: clamp(22px, 4.5vw, 28px);
+	font-weight: 400;
+	letter-spacing: 0.12em;
+	color: #fff;
+	text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+#invitation-content .closing-message,
+#invitation-content .closing-signoff {
+	color: #fff;
+	text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+}
+
+#invitation-content .closing-message {
+	margin: 0 0 14px;
+	font-size: clamp(12px, 3.2vw, 14px);
+	line-height: 1.75;
+}
+
+#invitation-content .closing-signoff {
+	margin: 0 0 10px;
+	font-size: clamp(12px, 3.2vw, 14px);
+	line-height: 1.65;
+	opacity: 0.92;
+}
+
+#invitation-content .closing-names {
+	margin: 0;
+	font-family: 'Allura', cursive;
+	font-size: clamp(32px, 8vw, 44px);
+	font-weight: 400;
+	line-height: 1.1;
+	color: #fff;
+	text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+#invitation-content #fh5co-countdown .countdown {
+	color: $brand-primary;
+}
+
+#invitation-content #fh5co-countdown .countdown small {
+	color: $brand-lighter;
+}
+
+#invitation-content #fh5co-started .overlay {
+	background: transparent !important;
+}
+
+#invitation-content #fh5co-started .heading-section h2 {
+	color: $header-maroon;
+}
+
+#invitation-content #fh5co-started .heading-section p {
+	color: $brand-lighter;
+}
+
+#invitation-content #fh5co-started .form-control {
+	background: rgba(255, 255, 255, .92);
+	border: 1px solid rgba(246, 157, 157, .35) !important;
+	color: $brand-darker;
+}
+
+#invitation-content #fh5co-started .form-control::-webkit-input-placeholder {
+	color: $brand-lighter;
+}
+
+#invitation-content #fh5co-started .form-control:-moz-placeholder {
+	color: $brand-lighter;
+}
+
+#invitation-content #fh5co-started .form-control::-moz-placeholder {
+	color: $brand-lighter;
+}
+
+#invitation-content #fh5co-started .form-control:-ms-input-placeholder {
+	color: $brand-lighter;
+}
+
+#invitation-content #fh5co-started .form-control:focus {
+	background: #fff;
+}
+
+#invitation-content > * {
+	position: relative;
+	z-index: 1;
 }
 
 #invitation-content .fh5co-section-gray,
@@ -1195,39 +1779,72 @@ html.reduce-motion {
 	background: transparent !important;
 }
 
-#invitation-content #fh5co-started .overlay {
-	background: rgba(72, 38, 43, .22) !important;
-}
-
 // Unified invitation cards (profile, events, panels)
 #invitation-content {
-	.couple-profile > div:not(.col-md-2),
-	.wedding-events,
-	.panel-default {
-		background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 248, 0.78));
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		border: 1px solid rgba(246, 157, 157, 0.22);
-		border-radius: 22px;
-		box-shadow: 0 18px 50px rgba(72, 38, 43, 0.12);
-		overflow: hidden;
-		transition: transform 0.25s ease, box-shadow 0.25s ease;
-	}
+	.invitation-card {
+		#fh5co-couple,
+		#fh5co-when-where,
+		#fh5co-gallery,
+		#fh5co-countdown,
+		#fh5co-started,
+		#ucapan,
+		#gift,
+		.fh5co-content-section,
+		.invitation-section-body,
+		#footer {
+			padding: 0 !important;
+			margin: 0 !important;
+			background: transparent !important;
+			float: none !important;
+			width: 100%;
+			max-width: 100%;
+			box-sizing: border-box;
+		}
 
-	@media screen and (min-width: 769px) {
+		.heading-section {
+			margin-bottom: 2em;
+		}
+
+		.couple-profile {
+			width: 100%;
+			margin-left: 0;
+			margin-right: 0;
+		}
+
+		.row {
+			margin-left: 0;
+			margin-right: 0;
+
+			> [class*="col-"] {
+				padding-left: 12px;
+				padding-right: 12px;
+			}
+		}
+
+		.couple-profile > div:not(.col-md-2),
+		.wedding-events,
+		.panel-default {
+			background: rgba(255, 252, 251, 0.72);
+			border: 1px solid rgba(246, 157, 157, 0.18);
+			border-radius: 16px;
+			box-shadow: none;
+			backdrop-filter: none;
+			-webkit-backdrop-filter: none;
+		}
+
 		.couple-profile > div:not(.col-md-2):hover,
 		.wedding-events:hover,
 		.panel-default:hover {
-			transform: translateY(-3px);
-			box-shadow: 0 22px 56px rgba(72, 38, 43, 0.16);
+			transform: none;
+			box-shadow: none;
 		}
 	}
 
+	.animate-box {
+		opacity: 1;
+	}
+
 	.panel-default {
-		border: 1px solid transparent;
-		background:
-			linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 248, 0.78)) padding-box,
-			linear-gradient(135deg, rgba(246, 157, 157, 0.35), rgba(255, 243, 220, 0.55)) border-box;
 		margin-bottom: 20px;
 
 		.panel-body {
@@ -1235,7 +1852,7 @@ html.reduce-motion {
 		}
 
 		h3 {
-			font-family: $font-secondary;
+			font-family: "Times New Roman", Times, serif;
 			color: #4f3f42;
 			font-weight: 400;
 			letter-spacing: 0.3px;
@@ -1261,9 +1878,8 @@ html.reduce-motion {
 		color: #6b5f5f;
 	}
 
-	.couple-profile h3,
 	.wedding-events .desc h3 {
-		font-family: $font-secondary;
+		font-family: "Times New Roman", Times, serif;
 		color: #4f3f42;
 		font-weight: 400;
 		letter-spacing: 0.3px;
@@ -1273,6 +1889,25 @@ html.reduce-motion {
 		margin-top: 16px;
 		padding-top: 16px;
 		border-top: 1px solid rgba(246, 157, 157, 0.15);
+	}
+
+	.couple-first-name {
+		font-family: 'Allura', cursive;
+		font-size: 52px;
+		color: #5c2e35;
+		margin: 16px 0 4px;
+		line-height: 1.2;
+	}
+
+	.couple-profile h3.couple-full-name {
+		font-family: $font-primary;
+		font-size: 18px;
+		font-weight: 400;
+		color: #4f3f42;
+		margin: 0 0 12px;
+		padding-top: 0;
+		border-top: none;
+		letter-spacing: 0.2px;
 	}
 
 	.profile-photo-frame {
@@ -1287,8 +1922,40 @@ html.reduce-motion {
 		line-height: 1.8;
 	}
 
+	.couple-instagram {
+		margin: 10px 0 0;
+	}
+
+	.couple-instagram a {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		color: $brand-primary;
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		transition: color 0.2s ease;
+
+		&:hover,
+		&:focus {
+			color: darken($brand-primary, 8%);
+			text-decoration: none;
+		}
+	}
+
+	.couple-instagram .icon-instagram {
+		font-size: 20px;
+	}
+
 	.wedding-events .desc {
-		border-top: 1px solid rgba(246, 157, 157, 0.12);
+		border-top: none;
+		border-bottom: 1px solid rgba(246, 157, 157, 0.12);
+		padding: 1.75em 1.5em 1.5em;
+	}
+
+	.wedding-events .ceremony-bg {
+		border-radius: 0 0 16px 16px;
+		overflow: hidden;
 	}
 
 	.wedding-events .desc h3 {
@@ -1334,7 +2001,7 @@ html.reduce-motion {
 		font-size: 50px;
 		font-weight: 300;
 		position: relative;
-		color: $brand-primary;
+		color: $header-maroon;
 	}
 	p {
 		font-size: 18px;
@@ -1342,11 +2009,17 @@ html.reduce-motion {
 }
 
 #fh5co-couple{
+	.couple-profile:not(.row) {
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+	}
+
 	.profile-photo-frame {
 		position: relative;
 		display: inline-block;
-		width: min(240px, 82vw);
-		aspect-ratio: 682 / 1024;
+		width: min(260px, 82vw);
+		aspect-ratio: 353 / 707;
 		margin: 0 auto 20px;
 		overflow: hidden;
 
@@ -1354,7 +2027,7 @@ html.reduce-motion {
 			content: "";
 			position: absolute;
 			inset: 0;
-			background: url('../images/profile-frame-floral.png') center / 100% 100% no-repeat;
+			background: url('../images/profile-frame-joglo.png') center / 100% 100% no-repeat;
 			pointer-events: none;
 			z-index: 2;
 		}
@@ -1362,26 +2035,26 @@ html.reduce-motion {
 
 	.profile-photo {
 		position: absolute;
-		top: 22.5%;
-		left: 8.65%;
-		width: 79.6%;
-		height: 42%;
-		max-width: 79.6%;
-		max-height: 42%;
+		top: 13.5%;
+		left: 12%;
+		width: 76%;
+		height: 32%;
+		max-width: 76%;
+		max-height: 32%;
 		z-index: 1;
 		display: block;
 		object-fit: cover;
-		object-position: center center;
+		object-position: center 18%;
 		margin: 0;
 		border-radius: 0;
 		box-shadow: none;
 	}
 
 	.couple-profile .profile-photo {
-		width: 79.6%;
-		height: 42%;
-		max-width: 79.6%;
-		max-height: 42%;
+		width: 76%;
+		height: 32%;
+		max-width: 76%;
+		max-height: 32%;
 	}
 
 	.couple-profile > div:not(.col-md-2) {
@@ -1598,18 +2271,24 @@ html.reduce-motion {
 
 	.swiper-slide {
 		height: auto;
+		display: flex;
+		justify-content: center;
 	}
 
 	.gallery-img {
 		display: block;
+		width: 100%;
+		max-width: min(320px, 78vw);
+		margin: 0 auto;
 		border-radius: 12px;
 		overflow: hidden;
 		box-shadow: 0 12px 32px rgba(31, 22, 30, 0.18);
 
 		img {
 			width: 100%;
-			aspect-ratio: 4 / 3;
+			aspect-ratio: 2 / 3;
 			object-fit: cover;
+			object-position: center top;
 			display: block;
 		}
 	}
@@ -1639,6 +2318,11 @@ html.reduce-motion {
 		margin-bottom: 25px;
 		img {
 			position: relative;
+			width: 100%;
+			aspect-ratio: 2 / 3;
+			object-fit: cover;
+			object-position: center top;
+			display: block;
 			max-width: 100%;
 			-webkit-transform: scale(1.0);
 			-moz-transform: scale(1.0);
@@ -1796,6 +2480,10 @@ html.reduce-motion {
 }
 
 .animate-box {
+	.js #invitation-content & {
+		opacity: 1;
+	}
+
 	.js & {
 		opacity: 0;
 	}
@@ -2125,7 +2813,7 @@ html.reduce-motion {
 	}
 
 	#fh5co-couple .profile-photo-frame {
-		width: min(210px, 78vw);
+		width: min(220px, 78vw);
 	}
 
 	#invitation-content .couple-profile > div:not(.col-md-2) {
@@ -2133,15 +2821,25 @@ html.reduce-motion {
 		margin-bottom: 18px;
 	}
 
+	#invitation-content .couple-first-name {
+		font-size: 40px;
+	}
+
+	#invitation-content .couple-profile h3.couple-full-name {
+		font-size: 16px;
+	}
+
 	#invitation-content .panel-default .panel-body {
 		padding: 22px 16px;
 	}
 
 	#fh5co-couple .couple-profile .profile-photo {
-		width: 79.6%;
-		height: 42%;
-		max-width: 79.6%;
-		max-height: 42%;
+		top: 13.5%;
+		left: 12%;
+		width: 76%;
+		height: 32%;
+		max-width: 76%;
+		max-height: 32%;
 	}
 
 	.heading-section {
@@ -2206,8 +2904,9 @@ html.reduce-motion {
 
 	.gallery .gallery-img img {
 		width: 100%;
-		aspect-ratio: 4 / 3;
+		aspect-ratio: 2 / 3;
 		object-fit: cover;
+		object-position: center top;
 	}
 
 	.gallery-swiper-wrap {

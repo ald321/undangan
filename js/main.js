@@ -76,14 +76,8 @@
 	};
 
 	var initInvitationEffects = function() {
-		var petalsTarget = document.querySelector('#petals-canvas-invite');
-		var petalsFx = window.NuptialFX && window.NuptialFX.Petals;
 		var galleryFx = window.NuptialFX && window.NuptialFX.GallerySwiper;
 		var scrollFx = window.NuptialFX && window.NuptialFX.ScrollAnimations;
-
-		if (petalsTarget && petalsFx) {
-			petalsFx.init('#petals-canvas-invite', 'invitation');
-		}
 
 		if (galleryFx) {
 			galleryFx.init();
@@ -373,21 +367,21 @@
 			var distance = countDownDate - now;
 
 			if (distance < 0) {
-				dayElement.innerHTML = "0 <small>hari</small>";
-				hourElement.innerHTML = "0 <small>jam</small>";
-				minuteElement.innerHTML = "0 <small>menit</small>";
-				secondElement.innerHTML = "0 <small>detik</small>";
+				dayElement.textContent = "0";
+				hourElement.textContent = "0";
+				minuteElement.textContent = "0";
+				secondElement.textContent = "0";
 				if (messageElement) {
-					messageElement.innerHTML = "Acara pernikahan telah berlangsung.";
+					messageElement.textContent = "Acara pernikahan telah berlangsung.";
 				}
 				clearInterval(timer);
 				return;
 			}
 
-			dayElement.innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24)) + " <small>hari</small>";
-			hourElement.innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + " <small>jam</small>";
-			minuteElement.innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)) + " <small>menit</small>";
-			secondElement.innerHTML = Math.floor((distance % (1000 * 60)) / 1000) + " <small>detik</small>";
+			dayElement.textContent = Math.floor(distance / (1000 * 60 * 60 * 24));
+			hourElement.textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			minuteElement.textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+			secondElement.textContent = Math.floor((distance % (1000 * 60)) / 1000);
 		};
 
 		var timer = setInterval(updateCountdown, 1000);
@@ -395,6 +389,9 @@
 	};
 
 	var smoothScroll = function() {
+		var invitationScroller = $('#invitation-content');
+		var useInvitationScroller = invitationScroller.length && $('body').hasClass('invitation-page');
+
 		$('#fh5co-page a[href^="#"]').on('click', function(e) {
 			if ($(this).is('#open-invitation')) {
 				return;
@@ -406,12 +403,21 @@
 			}
 
 			var target = $(href);
-			if (target.length) {
-				e.preventDefault();
-				$('html, body').animate({
-					scrollTop: target.offset().top
-				}, 700, 'easeInOutExpo');
+			if (!target.length) {
+				return;
 			}
+
+			e.preventDefault();
+
+			if (useInvitationScroller) {
+				var scrollTop = target.offset().top - invitationScroller.offset().top + invitationScroller.scrollTop();
+				invitationScroller.animate({ scrollTop: scrollTop }, 700, 'easeInOutExpo');
+				return;
+			}
+
+			$('html, body').animate({
+				scrollTop: target.offset().top
+			}, 700, 'easeInOutExpo');
 		});
 	};
 
@@ -427,6 +433,7 @@
 			e.preventDefault();
 			var button = $(this);
 			var text = button.data('copy');
+			var originalLabel = button.text();
 			var fallbackInput = $('<input>');
 
 			$('body').append(fallbackInput);
@@ -436,7 +443,7 @@
 
 			button.text('Tersalin');
 			setTimeout(function() {
-				button.text('Salin Nomor');
+				button.text(originalLabel);
 			}, 1500);
 		});
 	};

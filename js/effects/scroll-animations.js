@@ -10,14 +10,20 @@
 			return typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 		},
 
+		getScroller: function () {
+			return document.querySelector('#invitation-content');
+		},
+
 		init: function () {
 			if (!this.hasGSAP() || this.reducedMotion()) {
 				this.fallbackReveal();
+				this.fallbackInvitationSlides();
 				return;
 			}
 
 			window.gsap.registerPlugin(window.ScrollTrigger);
 			this.initScrollReveal();
+			this.initInvitationSlides();
 		},
 
 		initCoverIntro: function (onGuestReady) {
@@ -91,7 +97,7 @@
 
 		getRevealElements: function () {
 			return window.gsap.utils.toArray('.animate-box').filter(function (el) {
-				return !el.closest('#cover');
+				return !el.closest('#cover') && !el.closest('#invitation-content');
 			});
 		},
 
@@ -115,6 +121,7 @@
 			var self = this;
 			var gsap = window.gsap;
 			var ScrollTrigger = window.ScrollTrigger;
+			var scroller = self.getScroller();
 
 			self.getRevealElements().forEach(function (el) {
 				gsap.set(el, { opacity: 0, y: 48 });
@@ -126,6 +133,7 @@
 
 				ScrollTrigger.create({
 					trigger: el,
+					scroller: scroller || window,
 					start: 'top 85%',
 					once: true,
 					onEnter: function () {
@@ -143,6 +151,80 @@
 					}
 				});
 				ScrollTrigger.refresh();
+			});
+		},
+
+		initInvitationSlides: function () {
+			var slides = document.querySelectorAll('#invitation-content .invitation-slide');
+			if (!slides.length) {
+				return;
+			}
+
+			if (!this.hasGSAP() || this.reducedMotion()) {
+				this.fallbackInvitationSlides();
+				return;
+			}
+
+			var gsap = window.gsap;
+			var ScrollTrigger = window.ScrollTrigger;
+			var scroller = this.getScroller();
+
+			slides.forEach(function (slide, index) {
+				var card = slide.querySelector('.invitation-card');
+				if (!card) {
+					return;
+				}
+
+				gsap.set(card, {
+					opacity: 1,
+					y: index === 0 ? 0 : 20,
+					scale: index === 0 ? 1 : 0.985
+				});
+
+				if (index === 0) {
+					slide.classList.add('is-active');
+				}
+
+				ScrollTrigger.create({
+					trigger: slide,
+					scroller: scroller || window,
+					start: 'top 72%',
+					end: 'bottom 28%',
+					onEnter: function () {
+						gsap.to(card, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power2.out', overwrite: 'auto' });
+						slide.classList.add('is-active');
+					},
+					onLeave: function () {
+						gsap.to(card, { opacity: 1, y: -12, scale: 0.985, duration: 0.45, ease: 'power2.inOut', overwrite: 'auto' });
+						slide.classList.remove('is-active');
+					},
+					onEnterBack: function () {
+						gsap.to(card, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power2.out', overwrite: 'auto' });
+						slide.classList.add('is-active');
+					},
+					onLeaveBack: function () {
+						if (index === 0) {
+							return;
+						}
+						gsap.to(card, { opacity: 1, y: 20, scale: 0.985, duration: 0.45, ease: 'power2.inOut', overwrite: 'auto' });
+						slide.classList.remove('is-active');
+					}
+				});
+			});
+
+			ScrollTrigger.refresh();
+		},
+
+		fallbackInvitationSlides: function () {
+			document.querySelectorAll('#invitation-content .invitation-slide').forEach(function (slide, index) {
+				var card = slide.querySelector('.invitation-card');
+				if (card) {
+					card.style.opacity = '1';
+					card.style.transform = 'none';
+				}
+				if (index === 0) {
+					slide.classList.add('is-active');
+				}
 			});
 		},
 
