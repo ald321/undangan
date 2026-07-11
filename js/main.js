@@ -105,6 +105,7 @@
 		if (!content.length) {
 			openButton.on('click', function(e) {
 				var destination = openButton.attr('href') || 'invitation.html';
+				var preloader = window.NuptialPreloader;
 
 				e.preventDefault();
 				e.stopImmediatePropagation();
@@ -127,12 +128,22 @@
 					window.location.href = destination;
 				};
 
-				if (scrollFx) {
-					scrollFx.playCoverClose({ onComplete: redirect });
-				} else {
-					cover.addClass('cover-closing');
-					setTimeout(redirect, 950);
+				var openAfterPreload = function() {
+					if (scrollFx) {
+						scrollFx.playCoverClose({ onComplete: redirect });
+					} else {
+						cover.addClass('cover-closing');
+						setTimeout(redirect, 950);
+					}
+				};
+
+				if (preloader) {
+					preloader.show();
+					preloader.preload(preloader.assets, preloader.updateProgress).then(openAfterPreload);
+					return;
 				}
+
+				openAfterPreload();
 			});
 			return;
 		}

@@ -1117,6 +1117,15 @@ html.reduce-motion .petals-layer {
   scroll-snap-type: y proximity;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  --inv-text-xs: clamp(11px, 2.6vw, 13px);
+  --inv-text-sm: clamp(13px, 3.2vw, 15px);
+  --inv-text-base: clamp(14px, 3.5vw, 16px);
+  --inv-text-md: clamp(15px, 3.8vw, 18px);
+  --inv-text-lg: clamp(28px, 6vw, 38px);
+  --inv-text-xl: clamp(34px, 7.5vw, 50px);
+  --inv-text-script: clamp(36px, 9vw, 52px);
+  --inv-text-script-sm: clamp(36px, 8vw, 48px);
+  --inv-text-card-title: clamp(18px, 4.5vw, 22px);
 }
 
 #cover {
@@ -1462,7 +1471,7 @@ body.invitation-page #invitation-content {
 
 #invitation-content .journey-title {
   font-family: 'Allura', cursive;
-  font-size: clamp(36px, 8vw, 48px);
+  font-size: var(--inv-text-script-sm);
   color: #8b2942;
   text-align: center;
   margin: 0 0 24px;
@@ -1478,17 +1487,18 @@ body.invitation-page #invitation-content {
 
 #invitation-content .journey-quote p {
   font-family: "Times New Roman", Times, serif;
-  font-size: 15px;
+  font-size: var(--inv-text-sm);
   line-height: 1.85;
   color: #5a5a5a;
   margin-bottom: 16px;
+  overflow-wrap: break-word;
 }
 
 #invitation-content .journey-quote cite {
   display: block;
   font-family: "Times New Roman", Times, serif;
   font-style: normal;
-  font-size: 14px;
+  font-size: var(--inv-text-xs);
   color: #848484;
 }
 
@@ -1497,10 +1507,6 @@ body.invitation-page #invitation-content {
     width: min(340px, 90vw);
     padding: 48px 22px 36px;
     border-radius: 50% 50% 20px 20px / 20% 20% 20px 20px;
-  }
-
-  #invitation-content .journey-quote p {
-    font-size: 14px;
   }
 }
 
@@ -1564,7 +1570,7 @@ body.invitation-page #invitation-content {
   display: block;
   margin-top: 6px;
   font-family: "Times New Roman", Times, serif;
-  font-size: 14px;
+  font-size: var(--inv-text-xs);
   color: #6b2438;
   letter-spacing: 0.02em;
 }
@@ -1581,7 +1587,7 @@ body.invitation-page #invitation-content {
   background: linear-gradient(90deg, #6b2438 0%, #c96b7a 100%);
   color: #fff;
   font-family: "Times New Roman", Times, serif;
-  font-size: 11px;
+  font-size: clamp(10px, 2.4vw, 12px);
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1599,13 +1605,13 @@ body.invitation-page #invitation-content {
 }
 
 #invitation-content .btn-countdown-calendar .icon-calendar {
-  font-size: 16px;
+  font-size: clamp(14px, 3.5vw, 16px);
 }
 
 #invitation-content .countdown-message {
   margin: 16px 0 0;
   font-family: "Times New Roman", Times, serif;
-  font-size: 13px;
+  font-size: var(--inv-text-xs);
   color: #6b2438;
   opacity: 0.85;
 }
@@ -1633,12 +1639,7 @@ body.invitation-page #invitation-content {
     margin-bottom: 20px;
   }
 
-  #invitation-content .countdown-label {
-    font-size: 13px;
-  }
-
   #invitation-content .btn-countdown-calendar {
-    font-size: 10px;
     padding: 11px 16px;
   }
 }
@@ -1663,7 +1664,7 @@ body.invitation-page #invitation-content {
 }
 
 #invitation-content .invitation-card .heading-section {
-  margin-bottom: 2em;
+  margin-bottom: clamp(1.5em, 4vw, 2em);
 }
 
 #invitation-content .invitation-card .couple-profile {
@@ -1744,15 +1745,54 @@ body.invitation-page #invitation-content {
   color: #848484;
 }
 
-#invitation-content .heading-section h2,
+#invitation-content .heading-section {
+  margin-bottom: clamp(1.5em, 4vw, 3em);
+}
+
+#invitation-content .heading-section h2 {
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 400;
+  color: #8b2942;
+  font-size: var(--inv-text-lg);
+  line-height: 1.15;
+}
+
+#invitation-content .heading-section p {
+  font-size: var(--inv-text-md);
+  line-height: 1.65;
+}
+
 #invitation-content #footer h2 {
   font-family: "Times New Roman", Times, serif;
   font-weight: 400;
   color: #8b2942;
+  font-size: var(--inv-text-lg);
+  line-height: 1.15;
 }
 
 #invitation-content #footer p {
   color: #848484;
+  font-size: var(--inv-text-md);
+  line-height: 1.65;
+}
+
+#invitation-content .form-control,
+#invitation-content select.form-control,
+#invitation-content textarea.form-control {
+  font-size: var(--inv-text-sm);
+}
+
+#invitation-content .btn-primary:not(.btn-sm) {
+  font-size: var(--inv-text-sm);
+}
+
+#invitation-content .btn-primary.btn-sm,
+#invitation-content .btn.btn-sm {
+  font-size: var(--inv-text-xs);
+}
+
+#invitation-content .amp-center {
+  font-size: clamp(28px, 7vw, 34px);
 }
 
 #invitation-content .closing-content {
@@ -1863,6 +1903,7 @@ body.invitation-page #invitation-content {
   font-family: "Times New Roman", Times, serif;
   color: #4f3f42;
   font-weight: 400;
+  font-size: var(--inv-text-card-title);
   letter-spacing: 0.3px;
   padding-bottom: 12px;
   margin-bottom: 12px;
@@ -1871,7 +1912,7 @@ body.invitation-page #invitation-content {
 
 #invitation-content .panel-default p {
   color: #6f6464;
-  font-size: 15px;
+  font-size: var(--inv-text-sm);
   line-height: 1.8;
 }
 
@@ -1881,14 +1922,24 @@ body.invitation-page #invitation-content {
 }
 
 #invitation-content .couple-profile > div:not(.col-md-2) {
-  padding: 32px 24px 28px !important;
+  padding: 0 0 28px !important;
+  overflow: hidden;
   color: #6b5f5f;
+}
+
+#invitation-content .couple-first-name,
+#invitation-content .couple-profile h3.couple-full-name,
+#invitation-content .couple-parent,
+#invitation-content .couple-instagram {
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 #invitation-content .wedding-events .desc h3 {
   font-family: "Times New Roman", Times, serif;
   color: #4f3f42;
   font-weight: 400;
+  font-size: var(--inv-text-card-title);
   letter-spacing: 0.3px;
 }
 
@@ -1900,15 +1951,15 @@ body.invitation-page #invitation-content {
 
 #invitation-content .couple-first-name {
   font-family: "Allura", cursive;
-  font-size: 52px;
+  font-size: var(--inv-text-script);
   color: #5c2e35;
-  margin: 16px 0 4px;
+  margin: 12px 0 4px;
   line-height: 1.2;
 }
 
 #invitation-content .couple-profile h3.couple-full-name {
   font-family: "Open Sans", Arial, sans-serif;
-  font-size: 18px;
+  font-size: var(--inv-text-md);
   font-weight: 400;
   color: #4f3f42;
   margin: 0 0 12px;
@@ -1918,13 +1969,39 @@ body.invitation-page #invitation-content {
 }
 
 #invitation-content .profile-photo-frame {
-  margin-bottom: 8px;
+  width: 100%;
+  max-width: none;
+  display: block;
+  margin: 0 0 16px;
+  border-radius: 16px 16px 0 0;
+}
+
+#invitation-content #fh5co-couple .profile-photo-frame {
+  width: 100%;
+  max-width: none;
+  display: block;
+  margin: 0 0 16px;
+}
+
+#invitation-content #fh5co-couple .profile-photo,
+#invitation-content #fh5co-couple .couple-profile .profile-photo {
+  position: absolute;
+  inset: 0;
+  top: 9%;
+  left: 5%;
+  width: 90%;
+  height: 80%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  object-position: center 18%;
+  margin-bottom: 0;
 }
 
 #invitation-content .couple-parent,
 #invitation-content .wedding-events .desc p {
   color: #6f6464;
-  font-size: 15px;
+  font-size: var(--inv-text-sm);
   font-weight: 400;
   line-height: 1.8;
 }
@@ -1938,7 +2015,7 @@ body.invitation-page #invitation-content {
   align-items: center;
   gap: 8px;
   color: #F69D9D;
-  font-size: 14px;
+  font-size: clamp(12px, 3vw, 14px);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -1951,7 +2028,7 @@ body.invitation-page #invitation-content {
 }
 
 #invitation-content .couple-instagram .icon-instagram {
-  font-size: 20px;
+  font-size: clamp(16px, 4vw, 20px);
 }
 
 #invitation-content .wedding-events .desc {
@@ -1971,13 +2048,13 @@ body.invitation-page #invitation-content {
 
 #invitation-content .wedding-events .desc .event-time strong {
   color: #4f3f42;
-  font-size: 15px;
+  font-size: var(--inv-text-sm);
   font-weight: 700;
 }
 
 #invitation-content .wedding-events .desc .event-venue {
   color: #4f3f42;
-  font-size: 16px;
+  font-size: var(--inv-text-base);
   font-weight: 700;
 }
 
@@ -3054,11 +3131,15 @@ body.invitation-page #invitation-content {
     margin-bottom: 18px;
     padding: 24px 16px 22px !important;
   }
-  #invitation-content .couple-first-name {
-    font-size: 40px;
+  #invitation-content .couple-profile > div:not(.col-md-2) {
+    padding: 0 0 22px !important;
   }
-  #invitation-content .couple-profile h3.couple-full-name {
-    font-size: 16px;
+  #invitation-content .couple-first-name,
+  #invitation-content .couple-profile h3.couple-full-name,
+  #invitation-content .couple-parent,
+  #invitation-content .couple-instagram {
+    padding-left: 16px;
+    padding-right: 16px;
   }
   #invitation-content .panel-default .panel-body {
     padding: 22px 16px;
@@ -3075,25 +3156,9 @@ body.invitation-page #invitation-content {
     margin-left: auto;
     margin-right: auto;
   }
-  #fh5co-couple .profile-photo-frame {
-    width: min(220px, 78vw);
-  }
-  #fh5co-couple .couple-profile .profile-photo {
-    top: 9%;
-    left: 12%;
-    width: 76%;
-    height: 80%;
-    max-width: 76%;
-    max-height: 80%;
-  }
-  .heading-section {
-    margin-bottom: 2em;
-  }
-  .heading-section h2 {
-    font-size: 38px;
-  }
-  .heading-section p {
-    font-size: 15px;
+  #invitation-content #fh5co-couple .profile-photo-frame {
+    width: 100%;
+    max-width: none;
   }
   #fh5co-couple,
   #fh5co-countdown,
@@ -3168,5 +3233,56 @@ body.invitation-page #invitation-content {
   #fh5co-countdown .countdown {
     font-size: 34px;
     gap: 12px 16px;
+  }
+}
+
+.invitation-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(253, 242, 240, 0.94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.invitation-loader[hidden] {
+  display: none;
+}
+
+.invitation-loader__inner {
+  text-align: center;
+  padding: 24px;
+  color: #8b2942;
+}
+
+.invitation-loader__label {
+  margin: 16px 0 6px;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+}
+
+.invitation-loader__progress {
+  margin: 0;
+  font-size: 14px;
+  color: #848484;
+}
+
+.invitation-loader__spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+  border: 3px solid rgba(139, 41, 66, 0.18);
+  border-top-color: #8b2942;
+  border-radius: 50%;
+  animation: invitationLoaderSpin 0.85s linear infinite;
+}
+
+@keyframes invitationLoaderSpin {
+  to {
+    transform: rotate(360deg);
   }
 }
