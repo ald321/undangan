@@ -363,11 +363,22 @@
 		}).catch(function() {});
 	};
 
+	var revealGuestCover = function() {
+		var bootLoader = document.getElementById('guest-boot-loader');
+
+		document.body.classList.remove('is-guest-loading');
+
+		if (bootLoader) {
+			bootLoader.setAttribute('aria-busy', 'false');
+			bootLoader.setAttribute('hidden', '');
+		}
+	};
+
 	var personalizedGuest = function() {
 		var guestName = $('#guest-name');
 
 		if (!guestName.length) {
-			return;
+			return Promise.resolve(null);
 		}
 
 		var fallbackName = guestName.data('fallback') || 'Tamu Undangan';
@@ -376,26 +387,21 @@
 
 		var setGuestName = function(name) {
 			guestName.text(name);
-
-			if (window.NuptialFX && typeof window.NuptialFX._revealCoverGuest === 'function') {
-				window.NuptialFX._revealCoverGuest();
-				window.NuptialFX._revealCoverGuest = null;
-			}
 		};
 
 		if (bakedName) {
 			setGuestName(bakedName);
-			return;
+			return Promise.resolve(bakedName);
 		}
 
 		if (!guestCode) {
 			setGuestName(fallbackName);
-			return;
+			return Promise.resolve(fallbackName);
 		}
 
 		var guestsUrl = guestName.attr('data-guests-url') || GUESTS_API_URL;
 
-		fetch(guestsUrl + (guestsUrl.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(guestCode), {
+		return fetch(guestsUrl + (guestsUrl.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(guestCode), {
 			cache: 'no-store'
 		})
 			.then(function(response) {
@@ -413,10 +419,13 @@
 					});
 				}
 
-				setGuestName(guest && guest.name ? guest.name : fallbackName);
+				var resolvedName = guest && guest.name ? guest.name : fallbackName;
+				setGuestName(resolvedName);
+				return resolvedName;
 			})
 			.catch(function() {
 				setGuestName(fallbackName);
+				return fallbackName;
 			});
 	};
 
@@ -529,12 +538,6 @@
 		contentWayPoint();
 		invitationBackLink();
 		invitationGate();
-
-		if ($('#cover').length) {
-			initCoverEffects();
-		}
-
-		personalizedGuest();
 		musicToggle();
 		resumeMusicAfterCover();
 		startMusicOnFirstInteraction();
@@ -546,6 +549,20 @@
 		if ($('#invitation-content').length) {
 			initInvitationEffects();
 		}
+
+		// Wait for guest name from Apps Script before showing cover/animations.
+		personalizedGuest().then(function() {
+			if ($('#cover').length) {
+				initCoverEffects();
+			}
+
+			revealGuestCover();
+
+			if (window.NuptialFX && typeof window.NuptialFX._revealCoverGuest === 'function') {
+				window.NuptialFX._revealCoverGuest();
+				window.NuptialFX._revealCoverGuest = null;
+			}
+		});
 	});
 
 

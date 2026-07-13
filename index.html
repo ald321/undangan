@@ -36,13 +36,24 @@
 	<link rel="stylesheet" href="css/superfish.css">
 	<link rel="stylesheet" href="css/magnific-popup.css">
 	<link rel="stylesheet" href="css/style.css">
+	<style>
+		body.is-guest-loading #cover { opacity: 0; visibility: hidden; }
+		body.is-guest-loading #guest-boot-loader { display: flex; }
+		#guest-boot-loader { display: none; }
+	</style>
 
 	<script src="js/modernizr-2.6.2.min.js"></script>
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 	</head>
-	<body>
+	<body class="is-guest-loading">
+		<div id="guest-boot-loader" class="invitation-loader" aria-live="polite" aria-busy="true">
+			<div class="invitation-loader__inner">
+				<div class="invitation-loader__spinner" aria-hidden="true"></div>
+				<p class="invitation-loader__label">Menyiapkan undangan...</p>
+			</div>
+		</div>
 		<div id="fh5co-wrapper">
 		<div id="fh5co-page">
 

@@ -3001,6 +3001,21 @@ html.invitation-page {
 	}
 }
 
+body.is-guest-loading {
+	#cover {
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	#guest-boot-loader {
+		display: flex;
+	}
+}
+
+#guest-boot-loader {
+	display: none;
+}
+
 .invitation-loader {
 	position: fixed;
 	inset: 0;
