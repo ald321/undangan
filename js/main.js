@@ -115,6 +115,7 @@
 				}
 
 				openButton.addClass('is-opening');
+				markInvitationOpened(getGuestCodeFromUrl());
 
 				if (window.location.search && destination.indexOf('?') === -1) {
 					destination += window.location.search;
@@ -159,6 +160,7 @@
 			}
 
 			openButton.addClass('is-opening');
+			markInvitationOpened(getGuestCodeFromUrl());
 			playWeddingMusic();
 
 			var finishOpen = function() {
@@ -316,6 +318,40 @@
 		}
 	};
 
+	var GUESTS_API_URL =
+		'https://script.google.com/macros/s/AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec';
+
+	var getGuestCodeFromUrl = function() {
+		var params = new URLSearchParams(window.location.search);
+		var pathMatch = window.location.pathname.match(/\/tamu\/([^/]+)\/?$/i);
+
+		return (
+			params.get('to') ||
+			params.get('code') ||
+			params.get('guest') ||
+			(pathMatch && pathMatch[1]) ||
+			''
+		).trim();
+	};
+
+	var markInvitationOpened = function(guestCode) {
+		if (!guestCode) {
+			return;
+		}
+
+		fetch(GUESTS_API_URL, {
+			method: 'POST',
+			mode: 'no-cors',
+			headers: {
+				'Content-Type': 'text/plain;charset=utf-8'
+			},
+			body: JSON.stringify({
+				action: 'opened',
+				code: guestCode
+			})
+		}).catch(function() {});
+	};
+
 	var personalizedGuest = function() {
 		var guestName = $('#guest-name');
 
@@ -325,15 +361,7 @@
 
 		var fallbackName = guestName.data('fallback') || 'Tamu Undangan';
 		var bakedName = (guestName.attr('data-guest-name') || '').trim();
-		var params = new URLSearchParams(window.location.search);
-		var pathMatch = window.location.pathname.match(/\/tamu\/([^/]+)\/?$/i);
-		var guestCode = (
-			params.get('to') ||
-			params.get('code') ||
-			params.get('guest') ||
-			(pathMatch && pathMatch[1]) ||
-			''
-		).trim();
+		var guestCode = getGuestCodeFromUrl();
 
 		var setGuestName = function(name) {
 			guestName.text(name);
@@ -354,8 +382,7 @@
 			return;
 		}
 
-		var guestsUrl = guestName.attr('data-guests-url') ||
-			'https://script.google.com/macros/s/AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec';
+		var guestsUrl = guestName.attr('data-guests-url') || GUESTS_API_URL;
 
 		fetch(guestsUrl + (guestsUrl.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(guestCode), {
 			cache: 'no-store'
