@@ -371,6 +371,7 @@
 		if (bootLoader) {
 			bootLoader.setAttribute('aria-busy', 'false');
 			bootLoader.setAttribute('hidden', '');
+			bootLoader.style.setProperty('display', 'none', 'important');
 		}
 	};
 
@@ -400,10 +401,11 @@
 		}
 
 		var guestsUrl = guestName.attr('data-guests-url') || GUESTS_API_URL;
+		var requestUrl = guestsUrl +
+			(guestsUrl.indexOf('?') === -1 ? '?' : '&') +
+			'code=' + encodeURIComponent(guestCode);
 
-		return fetch(guestsUrl + (guestsUrl.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(guestCode), {
-			cache: 'no-store'
-		})
+		var fetchGuest = fetch(requestUrl, { cache: 'no-store' })
 			.then(function(response) {
 				if (!response.ok) {
 					throw new Error('Guest list could not be loaded.');
@@ -422,11 +424,19 @@
 				var resolvedName = guest && guest.name ? guest.name : fallbackName;
 				setGuestName(resolvedName);
 				return resolvedName;
-			})
-			.catch(function() {
-				setGuestName(fallbackName);
-				return fallbackName;
 			});
+
+		var timeout = new Promise(function(resolve) {
+			window.setTimeout(function() {
+				setGuestName(fallbackName);
+				resolve(fallbackName);
+			}, 8000);
+		});
+
+		return Promise.race([fetchGuest, timeout]).catch(function() {
+			setGuestName(fallbackName);
+			return fallbackName;
+		});
 	};
 
 	var weddingCountdown = function() {
@@ -531,38 +541,51 @@
 
 	$(document).ready(function() {
 		if (!protectInvitationPage()) {
+			revealGuestCover();
 			return;
 		}
 
-		parallax();
-		contentWayPoint();
-		invitationBackLink();
-		invitationGate();
-		musicToggle();
-		resumeMusicAfterCover();
-		startMusicOnFirstInteraction();
-		weddingCountdown();
-		smoothScroll();
-		staticForms();
-		copyGiftNumber();
+		// Resolve guest name first so the boot loader never waits on unrelated init.
+		personalizedGuest()
+			.catch(function() {
+				var guestName = $('#guest-name');
+				if (guestName.length) {
+					guestName.text(guestName.data('fallback') || 'Tamu Undangan');
+				}
+			})
+			.then(function() {
+				try {
+					if ($('#cover').length) {
+						initCoverEffects();
+					}
 
-		if ($('#invitation-content').length) {
-			initInvitationEffects();
-		}
+					if (window.NuptialFX && typeof window.NuptialFX._revealCoverGuest === 'function') {
+						window.NuptialFX._revealCoverGuest();
+						window.NuptialFX._revealCoverGuest = null;
+					}
+				} catch (error) {}
+			})
+			.then(function() {
+				revealGuestCover();
+			});
 
-		// Wait for guest name from Apps Script before showing cover/animations.
-		personalizedGuest().then(function() {
-			if ($('#cover').length) {
-				initCoverEffects();
+		try {
+			parallax();
+			contentWayPoint();
+			invitationBackLink();
+			invitationGate();
+			musicToggle();
+			resumeMusicAfterCover();
+			startMusicOnFirstInteraction();
+			weddingCountdown();
+			smoothScroll();
+			staticForms();
+			copyGiftNumber();
+
+			if ($('#invitation-content').length) {
+				initInvitationEffects();
 			}
-
-			revealGuestCover();
-
-			if (window.NuptialFX && typeof window.NuptialFX._revealCoverGuest === 'function') {
-				window.NuptialFX._revealCoverGuest();
-				window.NuptialFX._revealCoverGuest = null;
-			}
-		});
+		} catch (error) {}
 	});
 
 

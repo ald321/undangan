@@ -38,8 +38,9 @@
 	<link rel="stylesheet" href="css/style.css">
 	<style>
 		body.is-guest-loading #cover { opacity: 0; visibility: hidden; }
-		body.is-guest-loading #guest-boot-loader { display: flex; }
-		#guest-boot-loader { display: none; }
+		body.is-guest-loading #guest-boot-loader { display: flex !important; }
+		#guest-boot-loader,
+		#guest-boot-loader[hidden] { display: none !important; }
 	</style>
 
 	<script src="js/modernizr-2.6.2.min.js"></script>

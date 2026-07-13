@@ -3245,11 +3245,12 @@ body.is-guest-loading #cover {
 }
 
 body.is-guest-loading #guest-boot-loader {
-  display: flex;
+  display: flex !important;
 }
 
-#guest-boot-loader {
-  display: none;
+#guest-boot-loader,
+#guest-boot-loader[hidden] {
+  display: none !important;
 }
 
 .invitation-loader {
