@@ -324,8 +324,16 @@
 		}
 
 		var fallbackName = guestName.data('fallback') || 'Tamu Undangan';
+		var bakedName = (guestName.attr('data-guest-name') || '').trim();
 		var params = new URLSearchParams(window.location.search);
-		var guestCode = (params.get('to') || params.get('code') || params.get('guest') || '').trim();
+		var pathMatch = window.location.pathname.match(/\/tamu\/([^/]+)\/?$/i);
+		var guestCode = (
+			params.get('to') ||
+			params.get('code') ||
+			params.get('guest') ||
+			(pathMatch && pathMatch[1]) ||
+			''
+		).trim();
 
 		var setGuestName = function(name) {
 			guestName.text(name);
@@ -336,12 +344,19 @@
 			}
 		};
 
+		if (bakedName) {
+			setGuestName(bakedName);
+			return;
+		}
+
 		if (!guestCode) {
 			setGuestName(fallbackName);
 			return;
 		}
 
-		fetch('guests.json', { cache: 'no-store' })
+		var guestsUrl = guestName.attr('data-guests-url') || 'guests.json';
+
+		fetch(guestsUrl, { cache: 'no-store' })
 			.then(function(response) {
 				if (!response.ok) {
 					throw new Error('Guest list could not be loaded.');

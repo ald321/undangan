@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-07-13T02:53:41.848814+00:00",
+  "baseUrl": "https://ald321.github.io/undangan",
+  "guests": [
+    {
+      "code": "IKK55",
+      "name": "Bapak Ahmad dan Keluarga",
+      "shareUrl": "https://ald321.github.io/undangan/tamu/IKK55/"
+    },
+    {
+      "code": "ALD01",
+      "name": "Ibu Sari",
+      "shareUrl": "https://ald321.github.io/undangan/tamu/ALD01/"
+    },
+    {
+      "code": "FAM001",
+      "name": "Bapak/Ibu Keluarga Besar",
+      "shareUrl": "https://ald321.github.io/undangan/tamu/FAM001/"
+    }
+  ]
+}

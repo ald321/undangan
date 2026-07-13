@@ -21,6 +21,18 @@
 		'music/wedding.mp3'
 	];
 
+	var getAssetBase = function() {
+		var root = document.documentElement;
+		return (root && root.getAttribute('data-asset-base')) || '';
+	};
+
+	var withAssetBase = function(url) {
+		if (!url || /^(https?:)?\/\//i.test(url) || url.charAt(0) === '/') {
+			return url;
+		}
+		return getAssetBase() + url;
+	};
+
 	var getLoader = function() {
 		return document.getElementById('invitation-loader');
 	};
@@ -85,7 +97,7 @@
 	};
 
 	var preload = function(urls, onProgress) {
-		var list = urls || INVITATION_ASSETS;
+		var list = (urls || INVITATION_ASSETS).map(withAssetBase);
 		var loaded = 0;
 		var total = list.length;
 

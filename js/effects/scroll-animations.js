@@ -154,7 +154,156 @@
 			});
 		},
 
+		getSlideSurface: function (slide) {
+			return (
+				slide.querySelector('.invitation-card') ||
+				slide.querySelector('.countdown-card') ||
+				slide.querySelector('.closing-floral-frame')
+			);
+		},
+
+		getVeilContentTargets: function (card) {
+			var body =
+				card.querySelector('.invitation-section-body') ||
+				card.querySelector('.countdown-section') ||
+				card.querySelector('.closing-inner') ||
+				card;
+			var found = [];
+			var seen = typeof window.WeakSet === 'function' ? new window.WeakSet() : null;
+
+			function pushUnique(el) {
+				if (!el || (seen && seen.has(el))) {
+					return;
+				}
+				if (seen) {
+					seen.add(el);
+				} else if (found.indexOf(el) !== -1) {
+					return;
+				}
+				found.push(el);
+			}
+
+			body.querySelectorAll(
+				[
+					'.heading-section',
+					'.journey-photo-wrap',
+					'.journey-title',
+					'.journey-quote',
+					'.couple-profile > [class*="col-"]',
+					'.akan-menikah-photo',
+					'.wedding-events',
+					'.countdown-save-title',
+					'.countdown-grid',
+					'.btn-countdown-calendar',
+					'.countdown-message',
+					'.gallery-swiper-wrap',
+					'.gallery-grid-desktop',
+					'.panel-default',
+					'form',
+					'.closing-photo-media',
+					'.closing-title',
+					'.closing-message',
+					'.closing-signoff',
+					'.closing-names'
+				].join(', ')
+			).forEach(pushUnique);
+
+			if (!found.length) {
+				pushUnique(body);
+			}
+
+			return found.filter(function (el) {
+				return !found.some(function (other) {
+					return other !== el && other.contains(el);
+				});
+			});
+		},
+
+		usesNativeBlur: function (card) {
+			return card.classList.contains('countdown-card');
+		},
+
+		veilCardIn: function (card, options) {
+			options = options || {};
+			var gsap = window.gsap;
+			var duration = options.immediate ? 0 : 0.85;
+			var props = {
+				opacity: 1,
+				y: 0,
+				duration: duration,
+				ease: 'power2.out',
+				overwrite: 'auto'
+			};
+
+			if (!this.usesNativeBlur(card)) {
+				props.filter = 'blur(0px)';
+			}
+
+			gsap.to(card, props);
+		},
+
+		veilCardOut: function (card, direction) {
+			var gsap = window.gsap;
+			var goingUp = direction === 'up';
+			var props = {
+				opacity: this.usesNativeBlur(card) ? 0.35 : 0.55,
+				y: goingUp ? -36 : 36,
+				duration: 0.55,
+				ease: 'power2.inOut',
+				overwrite: 'auto'
+			};
+
+			if (!this.usesNativeBlur(card)) {
+				props.filter = 'blur(7px)';
+			}
+
+			gsap.to(card, props);
+		},
+
+		staggerVeilContent: function (card, options) {
+			options = options || {};
+			if (
+				card.getAttribute('data-veil-staggered') === '1' ||
+				card.getAttribute('data-veil-staggering') === '1'
+			) {
+				return;
+			}
+
+			var gsap = window.gsap;
+			var targets = this.getVeilContentTargets(card);
+			if (!targets.length) {
+				card.setAttribute('data-veil-staggered', '1');
+				return;
+			}
+
+			card.setAttribute('data-veil-staggering', '1');
+
+			if (options.immediate) {
+				gsap.set(targets, { opacity: 1, y: 0, clearProps: 'opacity,transform' });
+				card.removeAttribute('data-veil-staggering');
+				card.setAttribute('data-veil-staggered', '1');
+				return;
+			}
+
+			gsap.set(targets, { opacity: 0, y: 28 });
+			gsap.to(targets, {
+				opacity: 1,
+				y: 0,
+				duration: 0.55,
+				stagger: 0.09,
+				delay: 0.14,
+				ease: 'power2.out',
+				overwrite: 'auto',
+				onComplete: function () {
+					card.removeAttribute('data-veil-staggering');
+					card.setAttribute('data-veil-staggered', '1');
+					gsap.set(targets, { clearProps: 'opacity,transform' });
+				}
+			});
+		},
+
 		initInvitationSlides: function () {
+			var self = this;
 			var slides = document.querySelectorAll('#invitation-content .invitation-slide');
 			if (!slides.length) {
 				return;
@@ -170,19 +319,24 @@
 			var scroller = this.getScroller();
 
 			slides.forEach(function (slide, index) {
-				var card = slide.querySelector('.invitation-card');
+				var card = self.getSlideSurface(slide);
 				if (!card) {
 					return;
 				}
 
-				gsap.set(card, {
-					opacity: 1,
-					y: index === 0 ? 0 : 20,
-					scale: index === 0 ? 1 : 0.985
-				});
+				var isFirst = index === 0;
+				var initialState = { opacity: isFirst ? 1 : 0, y: isFirst ? 0 : 40 };
 
-				if (index === 0) {
+				if (!self.usesNativeBlur(card)) {
+					initialState.filter = isFirst ? 'blur(0px)' : 'blur(8px)';
+				}
+
+				gsap.set(card, initialState);
+
+				if (isFirst) {
+					gsap.set(self.getVeilContentTargets(card), { opacity: 0, y: 28 });
 					slide.classList.add('is-active');
+					self.staggerVeilContent(card, { immediate: false });
 				}
 
 				ScrollTrigger.create({
@@ -191,22 +345,24 @@
 					start: 'top 72%',
 					end: 'bottom 28%',
 					onEnter: function () {
-						gsap.to(card, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power2.out', overwrite: 'auto' });
+						self.veilCardIn(card);
+						self.staggerVeilContent(card);
 						slide.classList.add('is-active');
 					},
 					onLeave: function () {
-						gsap.to(card, { opacity: 1, y: -12, scale: 0.985, duration: 0.45, ease: 'power2.inOut', overwrite: 'auto' });
+						self.veilCardOut(card, 'up');
 						slide.classList.remove('is-active');
 					},
 					onEnterBack: function () {
-						gsap.to(card, { opacity: 1, y: 0, scale: 1, duration: 0.65, ease: 'power2.out', overwrite: 'auto' });
+						self.veilCardIn(card);
+						self.staggerVeilContent(card);
 						slide.classList.add('is-active');
 					},
 					onLeaveBack: function () {
-						if (index === 0) {
+						if (isFirst) {
 							return;
 						}
-						gsap.to(card, { opacity: 1, y: 20, scale: 0.985, duration: 0.45, ease: 'power2.inOut', overwrite: 'auto' });
+						self.veilCardOut(card, 'down');
 						slide.classList.remove('is-active');
 					}
 				});
@@ -216,11 +372,20 @@
 		},
 
 		fallbackInvitationSlides: function () {
+			var self = this;
 			document.querySelectorAll('#invitation-content .invitation-slide').forEach(function (slide, index) {
-				var card = slide.querySelector('.invitation-card');
+				var card = self.getSlideSurface(slide);
 				if (card) {
 					card.style.opacity = '1';
 					card.style.transform = 'none';
+					if (!self.usesNativeBlur(card)) {
+						card.style.filter = 'none';
+					}
+					card.setAttribute('data-veil-staggered', '1');
+					self.getVeilContentTargets(card).forEach(function (el) {
+						el.style.opacity = '1';
+						el.style.transform = 'none';
+					});
 				}
 				if (index === 0) {
 					slide.classList.add('is-active');

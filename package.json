@@ -1,12 +1,15 @@
 {
-"devDependencies": {
-  "gulp": "latest",
-  "gulp-util": "latest",
-  "gulp-sass": "latest",
-  "gulp-uglify": "latest",
-  "gulp-concat": "latest",
-  "gulp-connect": "latest",
-  "gulp-rename": "latest",
-  "gulp-order": "latest"
+  "scripts": {
+    "generate:guests": "python scripts/generate-guest-og.py"
+  },
+  "devDependencies": {
+    "gulp": "latest",
+    "gulp-util": "latest",
+    "gulp-sass": "latest",
+    "gulp-uglify": "latest",
+    "gulp-concat": "latest",
+    "gulp-connect": "latest",
+    "gulp-rename": "latest",
+    "gulp-order": "latest"
   }
 }
