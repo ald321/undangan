@@ -387,7 +387,9 @@
 		var guestCode = getGuestCodeFromUrl();
 
 		var setGuestName = function(name) {
-			guestName.text(name);
+			if (name) {
+				guestName.text(name);
+			}
 		};
 
 		if (bakedName) {
@@ -404,10 +406,8 @@
 		var requestUrl = guestsUrl +
 			(guestsUrl.indexOf('?') === -1 ? '?' : '&') +
 			'code=' + encodeURIComponent(guestCode);
-		var settled = false;
-		var timeoutId = null;
 
-		var fetchGuest = fetch(requestUrl, { cache: 'no-store' })
+		var fetchPromise = fetch(requestUrl, { cache: 'no-store' })
 			.then(function(response) {
 				if (!response.ok) {
 					throw new Error('Guest list could not be loaded.');
@@ -425,33 +425,30 @@
 
 				return guest && guest.name ? guest.name : fallbackName;
 			})
-			.catch(function() {
-				return fallbackName;
-			})
 			.then(function(resolvedName) {
-				if (!settled) {
-					settled = true;
-					if (timeoutId !== null) {
-						window.clearTimeout(timeoutId);
-					}
-					setGuestName(resolvedName);
-				}
+				// Always apply the real name when fetch finishes, even if the
+				// cover already opened via soft timeout.
+				setGuestName(resolvedName);
 				return resolvedName;
+			})
+			.catch(function() {
+				setGuestName(fallbackName);
+				return fallbackName;
 			});
 
-		var timeout = new Promise(function(resolve) {
-			timeoutId = window.setTimeout(function() {
-				if (settled) {
-					resolve(guestName.text() || fallbackName);
-					return;
-				}
-				settled = true;
-				setGuestName(fallbackName);
-				resolve(fallbackName);
-			}, 8000);
+		// Soft timeout only unlocks the cover UI. It must NOT overwrite the name.
+		var softTimeout = new Promise(function(resolve) {
+			window.setTimeout(function() {
+				resolve(guestName.text() || fallbackName);
+			}, 12000);
 		});
 
-		return Promise.race([fetchGuest, timeout]);
+		return Promise.race([fetchPromise, softTimeout]).then(function(name) {
+			fetchPromise.then(function(finalName) {
+				setGuestName(finalName);
+			});
+			return name;
+		});
 	};
 
 	var weddingCountdown = function() {
@@ -562,12 +559,6 @@
 
 		// Resolve guest name first so the boot loader never waits on unrelated init.
 		personalizedGuest()
-			.catch(function() {
-				var guestName = $('#guest-name');
-				if (guestName.length) {
-					guestName.text(guestName.data('fallback') || 'Tamu Undangan');
-				}
-			})
 			.then(function() {
 				try {
 					if ($('#cover').length) {
@@ -581,6 +572,9 @@
 				} catch (error) {}
 			})
 			.then(function() {
+				revealGuestCover();
+			})
+			.catch(function() {
 				revealGuestCover();
 			});
 
