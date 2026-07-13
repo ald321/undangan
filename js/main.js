@@ -339,16 +339,27 @@
 			return;
 		}
 
+		var payload = JSON.stringify({
+			action: 'opened',
+			code: guestCode
+		});
+
+		// sendBeacon survives page navigation better than fetch when
+		// "Buka Undangan" redirects to invitation.html.
+		if (navigator.sendBeacon) {
+			var blob = new Blob([payload], { type: 'text/plain;charset=utf-8' });
+			navigator.sendBeacon(GUESTS_API_URL, blob);
+			return;
+		}
+
 		fetch(GUESTS_API_URL, {
 			method: 'POST',
-			mode: 'no-cors',
 			headers: {
 				'Content-Type': 'text/plain;charset=utf-8'
 			},
-			body: JSON.stringify({
-				action: 'opened',
-				code: guestCode
-			})
+			body: payload,
+			keepalive: true,
+			redirect: 'follow'
 		}).catch(function() {});
 	};
 
