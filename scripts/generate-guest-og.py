@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate /tamu/{code}/index.html with personalized Open Graph tags."""
+"""Generate /tamu/{uuid}/index.html with personalized Open Graph tags (option B).
+
+Share URL (WhatsApp preview):  {baseUrl}/tamu/{uuid}/
+Invite / open URL (page param): {baseUrl}/?to={uuid}
+"""
 
 from __future__ import annotations
 
@@ -16,6 +20,8 @@ DEFAULT_GUESTS_API_URL = (
 	"https://script.google.com/macros/s/"
 	"AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec"
 )
+# UUID and legacy short codes (letters, digits, underscore, hyphen, dot).
+CODE_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 def escape_html(value: str) -> str:
@@ -64,6 +70,7 @@ def build_page(guest: dict, config: dict) -> str:
 	<meta name="description" content="{safe_description}" />
 	<meta name="keywords" content="undangan pernikahan, wedding invitation, dewi, aldi" />
 	<meta name="author" content="{safe_couple}" />
+	<link rel="canonical" href="{safe_page_url}" />
 
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="{safe_title}" />
@@ -132,7 +139,7 @@ def build_page(guest: dict, config: dict) -> str:
 									<p class="cover-invite-text">We Invite You to the Wedding of</p>
 									<h2>{safe_couple}</h2>
 									<p class="cover-date"><span>Sabtu, {safe_date}</span></p>
-									<p><a href="{asset('invitation.html')}?guest={encoded_code}" id="open-invitation" class="btn btn-primary btn-sm">Buka Undangan</a></p>
+									<p><a href="{asset('invitation.html')}?to={encoded_code}" id="open-invitation" class="btn btn-primary btn-sm">Buka Undangan</a></p>
 								</div>
 							</div>
 						</div>
@@ -187,38 +194,52 @@ def main() -> None:
 	config = json.loads((ROOT / "site-config.json").read_text(encoding="utf-8"))
 	guests = load_guests(config)
 	tamu_root = ROOT / "tamu"
+	base = config["baseUrl"].rstrip("/")
 
 	if tamu_root.exists():
 		shutil.rmtree(tamu_root)
 	tamu_root.mkdir(parents=True)
 
 	links = []
+	skipped = 0
 	for guest in guests:
 		code = str(guest.get("code") or "").strip()
+		name = str(guest.get("name") or "").strip()
 		if not code:
+			skipped += 1
 			continue
-		# Keep folder names filesystem-safe (codes are simple alphanumerics).
-		if not re.fullmatch(r"[A-Za-z0-9_-]+", code):
-			raise ValueError(f"Unsupported guest code for folder name: {code!r}")
+		if not CODE_PATTERN.fullmatch(code):
+			print(f"Skip unsupported code: {code!r}")
+			skipped += 1
+			continue
 
 		out_dir = tamu_root / code
 		out_dir.mkdir(parents=True)
 		(out_dir / "index.html").write_text(build_page(guest, config), encoding="utf-8")
 
-		share_url = f"{config['baseUrl'].rstrip('/')}/tamu/{quote(code)}/"
-		links.append({"code": code, "name": guest.get("name"), "shareUrl": share_url})
-		print(f"Generated: {share_url}")
+		share_url = f"{base}/tamu/{quote(code)}/"
+		invite_url = f"{base}/?to={quote(code)}"
+		links.append({
+			"code": code,
+			"name": name or guest.get("name"),
+			"shareUrl": share_url,
+			"inviteUrl": invite_url,
+		})
+		print(f"Generated: {share_url}  ({name})")
 
 	manifest = {
 		"generatedAt": datetime.now(timezone.utc).isoformat(),
 		"baseUrl": config["baseUrl"],
+		"mode": "B",
+		"sharePattern": "{baseUrl}/tamu/{code}/",
+		"invitePattern": "{baseUrl}/?to={code}",
 		"guests": links,
 	}
 	(tamu_root / "share-links.json").write_text(
 		json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
 		encoding="utf-8",
 	)
-	print(f"\nDone. {len(links)} guest page(s) written to tamu/")
+	print(f"\nDone. {len(links)} guest page(s) written to tamu/ (skipped {skipped})")
 
 
 if __name__ == "__main__":
