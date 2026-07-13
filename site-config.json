@@ -6,5 +6,6 @@
   "ogImage": "images/og-cover.jpg?v=2",
   "ogImageWidth": "1200",
   "ogImageHeight": "630",
-  "defaultDescription": "Dengan penuh rasa syukur, kami mengundang Anda untuk hadir di hari bahagia kami."
+  "defaultDescription": "Dengan penuh rasa syukur, kami mengundang Anda untuk hadir di hari bahagia kami.",
+  "guestsApiUrl": "https://script.google.com/macros/s/AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec"
 }

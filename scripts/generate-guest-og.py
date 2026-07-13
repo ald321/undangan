@@ -6,11 +6,16 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_GUESTS_API_URL = (
+	"https://script.google.com/macros/s/"
+	"AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec"
+)
 
 
 def escape_html(value: str) -> str:
@@ -123,7 +128,7 @@ def build_page(guest: dict, config: dict) -> str:
 							<div class="col-md-10 col-md-offset-1">
 								<div class="animate-box">
 									<p class="cover-recipient-label">Kepada Bapak/Ibu/Saudara/i</p>
-									<h3 id="guest-name" class="cover-guest-name" data-fallback="Tamu Undangan" data-guest-name="{safe_name}" data-guests-url="{asset('guests.json')}">{safe_name}</h3>
+									<h3 id="guest-name" class="cover-guest-name" data-fallback="Tamu Undangan" data-guest-name="{safe_name}">{safe_name}</h3>
 									<p class="cover-invite-text">We Invite You to the Wedding of</p>
 									<h2>{safe_couple}</h2>
 									<p class="cover-date"><span>Sabtu, {safe_date}</span></p>
@@ -164,9 +169,23 @@ def build_page(guest: dict, config: dict) -> str:
 """
 
 
+def load_guests(config: dict) -> list:
+	api_url = str(config.get("guestsApiUrl") or DEFAULT_GUESTS_API_URL).strip()
+	if not api_url:
+		raise ValueError("guestsApiUrl is missing in site-config.json")
+
+	with urllib.request.urlopen(api_url, timeout=60) as response:
+		payload = json.loads(response.read().decode("utf-8"))
+
+	if not isinstance(payload, list):
+		raise ValueError("Guests API must return a JSON array of {code, name} objects.")
+
+	return payload
+
+
 def main() -> None:
 	config = json.loads((ROOT / "site-config.json").read_text(encoding="utf-8"))
-	guests = json.loads((ROOT / "guests.json").read_text(encoding="utf-8"))
+	guests = load_guests(config)
 	tamu_root = ROOT / "tamu"
 
 	if tamu_root.exists():

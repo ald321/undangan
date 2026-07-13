@@ -354,20 +354,26 @@
 			return;
 		}
 
-		var guestsUrl = guestName.attr('data-guests-url') || 'guests.json';
+		var guestsUrl = guestName.attr('data-guests-url') ||
+			'https://script.google.com/macros/s/AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec';
 
-		fetch(guestsUrl, { cache: 'no-store' })
+		fetch(guestsUrl + (guestsUrl.indexOf('?') === -1 ? '?' : '&') + 'code=' + encodeURIComponent(guestCode), {
+			cache: 'no-store'
+		})
 			.then(function(response) {
 				if (!response.ok) {
 					throw new Error('Guest list could not be loaded.');
 				}
 				return response.json();
 			})
-			.then(function(guests) {
-				var normalizedCode = guestCode.toLowerCase();
-				var guest = guests.find(function(item) {
-					return item.code && item.code.toLowerCase() === normalizedCode;
-				});
+			.then(function(guest) {
+				// Apps Script may return one guest object or a full list.
+				if (Array.isArray(guest)) {
+					var normalizedCode = guestCode.toLowerCase();
+					guest = guest.find(function(item) {
+						return item.code && item.code.toLowerCase() === normalizedCode;
+					});
+				}
 
 				setGuestName(guest && guest.name ? guest.name : fallbackName);
 			})
