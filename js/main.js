@@ -404,6 +404,8 @@
 		var requestUrl = guestsUrl +
 			(guestsUrl.indexOf('?') === -1 ? '?' : '&') +
 			'code=' + encodeURIComponent(guestCode);
+		var settled = false;
+		var timeoutId = null;
 
 		var fetchGuest = fetch(requestUrl, { cache: 'no-store' })
 			.then(function(response) {
@@ -421,22 +423,35 @@
 					});
 				}
 
-				var resolvedName = guest && guest.name ? guest.name : fallbackName;
-				setGuestName(resolvedName);
+				return guest && guest.name ? guest.name : fallbackName;
+			})
+			.catch(function() {
+				return fallbackName;
+			})
+			.then(function(resolvedName) {
+				if (!settled) {
+					settled = true;
+					if (timeoutId !== null) {
+						window.clearTimeout(timeoutId);
+					}
+					setGuestName(resolvedName);
+				}
 				return resolvedName;
 			});
 
 		var timeout = new Promise(function(resolve) {
-			window.setTimeout(function() {
+			timeoutId = window.setTimeout(function() {
+				if (settled) {
+					resolve(guestName.text() || fallbackName);
+					return;
+				}
+				settled = true;
 				setGuestName(fallbackName);
 				resolve(fallbackName);
 			}, 8000);
 		});
 
-		return Promise.race([fetchGuest, timeout]).catch(function() {
-			setGuestName(fallbackName);
-			return fallbackName;
-		});
+		return Promise.race([fetchGuest, timeout]);
 	};
 
 	var weddingCountdown = function() {
