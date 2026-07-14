@@ -6,6 +6,20 @@
 			return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		},
 
+		isIOS: function () {
+			var ua = window.navigator.userAgent || '';
+			var platform = window.navigator.platform || '';
+			if (/iP(hone|od|ad)/.test(platform) || /iP(hone|od|ad)/.test(ua)) {
+				return true;
+			}
+			// iPadOS 13+ reports as Mac with touch
+			return platform === 'MacIntel' && typeof navigator.maxTouchPoints === 'number' && navigator.maxTouchPoints > 1;
+		},
+
+		allowFilterEffects: function () {
+			return !this.isIOS() && !this.reducedMotion();
+		},
+
 		hasGSAP: function () {
 			return typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 		},
@@ -22,6 +36,11 @@
 			}
 
 			window.gsap.registerPlugin(window.ScrollTrigger);
+
+			if (this.isIOS()) {
+				window.ScrollTrigger.config({ ignoreMobileResize: true });
+			}
+
 			this.initScrollReveal();
 			this.initInvitationSlides();
 		},
@@ -223,6 +242,41 @@
 			return card.classList.contains('countdown-card');
 		},
 
+		clearMotionProps: function (el) {
+			if (!el || !window.gsap) {
+				return;
+			}
+			window.gsap.set(el, { clearProps: 'opacity,transform,filter' });
+		},
+
+		forceShowCard: function (card, slide) {
+			if (!card) {
+				return;
+			}
+
+			if (window.gsap) {
+				window.gsap.set(card, {
+					opacity: 1,
+					y: 0,
+					filter: 'none',
+					clearProps: 'filter'
+				});
+				this.getVeilContentTargets(card).forEach(function (el) {
+					window.gsap.set(el, { opacity: 1, y: 0, clearProps: 'opacity,transform' });
+				});
+			} else {
+				card.style.opacity = '1';
+				card.style.transform = 'none';
+				card.style.filter = 'none';
+			}
+
+			card.setAttribute('data-veil-staggered', '1');
+			card.removeAttribute('data-veil-staggering');
+			if (slide) {
+				slide.classList.add('is-active');
+			}
+		},
+
 		veilCardIn: function (card, options) {
 			options = options || {};
 			var gsap = window.gsap;
@@ -232,10 +286,13 @@
 				y: 0,
 				duration: duration,
 				ease: 'power2.out',
-				overwrite: 'auto'
+				overwrite: 'auto',
+				onComplete: function () {
+					gsap.set(card, { clearProps: 'filter' });
+				}
 			};
 
-			if (!this.usesNativeBlur(card)) {
+			if (this.allowFilterEffects() && !this.usesNativeBlur(card)) {
 				props.filter = 'blur(0px)';
 			}
 
@@ -243,6 +300,11 @@
 		},
 
 		veilCardOut: function (card, direction) {
+			// On iOS, avoid dimming/blurring slides away — that is what leaves cards stuck invisible.
+			if (this.isIOS() || this.reducedMotion()) {
+				return;
+			}
+
 			var gsap = window.gsap;
 			var goingUp = direction === 'up';
 			var props = {
@@ -253,7 +315,7 @@
 				overwrite: 'auto'
 			};
 
-			if (!this.usesNativeBlur(card)) {
+			if (this.allowFilterEffects() && !this.usesNativeBlur(card)) {
 				props.filter = 'blur(7px)';
 			}
 
@@ -300,6 +362,56 @@
 					gsap.set(targets, { clearProps: 'opacity,transform' });
 				}
 			});
+
+			// Safety: never leave staggered content invisible if the tween is interrupted on mobile.
+			window.setTimeout(function () {
+				if (card.getAttribute('data-veil-staggered') === '1') {
+					return;
+				}
+				gsap.set(targets, { opacity: 1, y: 0, clearProps: 'opacity,transform' });
+				card.removeAttribute('data-veil-staggering');
+				card.setAttribute('data-veil-staggered', '1');
+			}, 2500);
+		},
+
+		activateSlide: function (slide, card, options) {
+			options = options || {};
+			this.veilCardIn(card, options);
+			this.staggerVeilContent(card, options);
+			slide.classList.add('is-active');
+		},
+
+		bindSlideObserverFallback: function (slide, card, isFirst) {
+			var self = this;
+			if (typeof window.IntersectionObserver !== 'function') {
+				return;
+			}
+
+			var scroller = this.getScroller();
+			var revealed = isFirst;
+
+			var observer = new window.IntersectionObserver(
+				function (entries) {
+					entries.forEach(function (entry) {
+						if (!entry.isIntersecting || entry.intersectionRatio < 0.2) {
+							return;
+						}
+						if (revealed && card.getAttribute('data-veil-staggered') === '1') {
+							self.forceShowCard(card, slide);
+							return;
+						}
+						revealed = true;
+						self.activateSlide(slide, card);
+					});
+				},
+				{
+					root: scroller || null,
+					threshold: [0.2, 0.35, 0.5],
+					rootMargin: '0px 0px -10% 0px'
+				}
+			);
+
+			observer.observe(slide);
 		},
 
 		initInvitationSlides: function () {
@@ -317,6 +429,7 @@
 			var gsap = window.gsap;
 			var ScrollTrigger = window.ScrollTrigger;
 			var scroller = this.getScroller();
+			var useFilter = this.allowFilterEffects();
 
 			slides.forEach(function (slide, index) {
 				var card = self.getSlideSurface(slide);
@@ -327,7 +440,7 @@
 				var isFirst = index === 0;
 				var initialState = { opacity: isFirst ? 1 : 0, y: isFirst ? 0 : 40 };
 
-				if (!self.usesNativeBlur(card)) {
+				if (useFilter && !self.usesNativeBlur(card)) {
 					initialState.filter = isFirst ? 'blur(0px)' : 'blur(8px)';
 				}
 
@@ -342,52 +455,59 @@
 				ScrollTrigger.create({
 					trigger: slide,
 					scroller: scroller || window,
-					start: 'top 72%',
-					end: 'bottom 28%',
+					start: 'top 80%',
+					end: 'bottom 20%',
 					onEnter: function () {
-						self.veilCardIn(card);
-						self.staggerVeilContent(card);
-						slide.classList.add('is-active');
+						self.activateSlide(slide, card);
 					},
 					onLeave: function () {
 						self.veilCardOut(card, 'up');
-						slide.classList.remove('is-active');
+						if (!self.isIOS()) {
+							slide.classList.remove('is-active');
+						}
 					},
 					onEnterBack: function () {
-						self.veilCardIn(card);
-						self.staggerVeilContent(card);
-						slide.classList.add('is-active');
+						self.activateSlide(slide, card);
 					},
 					onLeaveBack: function () {
 						if (isFirst) {
 							return;
 						}
 						self.veilCardOut(card, 'down');
-						slide.classList.remove('is-active');
+						if (!self.isIOS()) {
+							slide.classList.remove('is-active');
+						}
 					}
 				});
+
+				self.bindSlideObserverFallback(slide, card, isFirst);
 			});
 
 			ScrollTrigger.refresh();
+
+			if (scroller) {
+				window.setTimeout(function () {
+					ScrollTrigger.refresh();
+				}, 300);
+				window.setTimeout(function () {
+					ScrollTrigger.refresh();
+				}, 1000);
+				window.addEventListener(
+					'load',
+					function () {
+						ScrollTrigger.refresh();
+					},
+					{ once: true }
+				);
+			}
 		},
 
 		fallbackInvitationSlides: function () {
 			var self = this;
 			document.querySelectorAll('#invitation-content .invitation-slide').forEach(function (slide, index) {
 				var card = self.getSlideSurface(slide);
-				if (card) {
-					card.style.opacity = '1';
-					card.style.transform = 'none';
-					if (!self.usesNativeBlur(card)) {
-						card.style.filter = 'none';
-					}
-					card.setAttribute('data-veil-staggered', '1');
-					self.getVeilContentTargets(card).forEach(function (el) {
-						el.style.opacity = '1';
-						el.style.transform = 'none';
-					});
-				}
-				if (index === 0) {
+				self.forceShowCard(card, index === 0 ? slide : null);
+				if (index === 0 && slide) {
 					slide.classList.add('is-active');
 				}
 			});
@@ -423,6 +543,11 @@
 
 			var displayTc = cover.querySelector('.display-tc');
 			var scene = cover.querySelector('.viding-scene');
+			var coverProps = { scale: 1.06, opacity: 0, duration: 0.55, ease: 'power2.inOut' };
+			if (this.allowFilterEffects()) {
+				coverProps.filter = 'blur(6px)';
+			}
+
 			var tl = window.gsap.timeline({
 				onComplete: function () {
 					if (onComplete) {
@@ -435,11 +560,7 @@
 				tl.to(displayTc, { opacity: 0, y: -24, duration: 0.4, ease: 'power2.in' });
 			}
 
-			tl.to(
-				cover,
-				{ scale: 1.06, opacity: 0, filter: 'blur(6px)', duration: 0.55, ease: 'power2.inOut' },
-				displayTc ? '-=0.1' : 0
-			);
+			tl.to(cover, coverProps, displayTc ? '-=0.1' : 0);
 
 			if (scene) {
 				tl.to(scene, { y: 40, opacity: 0, duration: 0.5, ease: 'power2.in' }, '-=0.4');
@@ -479,6 +600,10 @@
 			var coverEl = cover.get(0);
 			var displayTc = coverEl.querySelector('.display-tc');
 			var scene = coverEl.querySelector('.viding-scene');
+			var coverProps = { scale: 1.06, opacity: 0, duration: 0.55, ease: 'power2.inOut' };
+			if (this.allowFilterEffects()) {
+				coverProps.filter = 'blur(6px)';
+			}
 
 			content.css('opacity', 0).show().addClass('invitation-opening');
 
@@ -494,11 +619,7 @@
 				tl.to(displayTc, { opacity: 0, y: -24, duration: 0.4, ease: 'power2.in' });
 			}
 
-			tl.to(
-				coverEl,
-				{ scale: 1.06, opacity: 0, filter: 'blur(6px)', duration: 0.55, ease: 'power2.inOut' },
-				displayTc ? '-=0.1' : 0
-			);
+			tl.to(coverEl, coverProps, displayTc ? '-=0.1' : 0);
 
 			if (scene) {
 				tl.to(scene, { y: 40, opacity: 0, duration: 0.5, ease: 'power2.in' }, '-=0.4');

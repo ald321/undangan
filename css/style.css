@@ -1115,8 +1115,9 @@ html.reduce-motion .petals-layer {
   height: 100dvh;
   background: #fdf2f0;
   scroll-snap-type: y proximity;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
+  /* Avoid smooth + touch momentum scrolling; both break ScrollTrigger on iOS Safari */
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: auto;
   --inv-text-xs: clamp(11px, 2.6vw, 13px);
   --inv-text-sm: clamp(13px, 3.2vw, 15px);
   --inv-text-base: clamp(14px, 3.5vw, 16px);
@@ -1265,7 +1266,7 @@ body.invitation-page #invitation-content {
   justify-content: center;
   padding: 5.5vh 5vw 4.5vh;
   background: url(../images/closing-floral-bg.png) center center / 100% 100% no-repeat;
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
 }
 
 #invitation-content .invitation-slide-closing-bg .closing-inner {
@@ -1350,7 +1351,7 @@ body.invitation-page #invitation-content {
   border-radius: 24px;
   padding: 36px 24px 32px;
   box-shadow: 0 22px 56px rgba(72, 38, 43, 0.12);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
   transition: box-shadow 0.35s ease;
   backface-visibility: hidden;
 }
@@ -2102,6 +2103,7 @@ body.invitation-page #invitation-content {
   aspect-ratio: 353 / 707;
   margin: 0 auto 20px;
   overflow: hidden;
+  background: #f3e4e0;
 }
 
 #fh5co-couple .profile-photo-frame::after {
@@ -3267,6 +3269,10 @@ body.is-guest-loading #guest-boot-loader {
 
 .invitation-loader[hidden] {
   display: none;
+}
+
+html.invitation-assets-loading #invitation-content {
+  visibility: hidden;
 }
 
 .invitation-loader__inner {

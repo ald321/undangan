@@ -87,7 +87,48 @@
 			setTimeout(function () {
 				scrollFx.refresh();
 			}, 400);
+			setTimeout(function () {
+				scrollFx.refresh();
+			}, 1200);
 		}
+	};
+
+	var bootInvitationPage = function() {
+		var content = document.querySelector('#invitation-content');
+		var cover = document.querySelector('#cover');
+		var preloader = window.NuptialPreloader;
+		var isInvitationOnly = content && !cover;
+
+		if (!isInvitationOnly) {
+			contentWayPoint();
+			if (content) {
+				initInvitationEffects();
+			}
+			return Promise.resolve();
+		}
+
+		document.documentElement.classList.add('invitation-assets-loading');
+
+		if (preloader) {
+			preloader.show();
+		}
+
+		var ready = preloader && typeof preloader.waitForCriticalAssets === 'function'
+			? preloader.waitForCriticalAssets(preloader.updateProgress)
+			: Promise.resolve();
+
+		return ready
+			.catch(function() {
+				return undefined;
+			})
+			.then(function() {
+				document.documentElement.classList.remove('invitation-assets-loading');
+				if (preloader) {
+					preloader.hide();
+				}
+				contentWayPoint();
+				initInvitationEffects();
+			});
 	};
 	
 	var invitationGate = function() {
@@ -124,6 +165,7 @@
 				var redirect = function() {
 					try {
 						sessionStorage.setItem('invitationOpened', 'true');
+						storeGuestName($('#guest-name').text());
 					} catch (error) {}
 
 					window.location.href = destination;
@@ -321,6 +363,31 @@
 	var GUESTS_API_URL =
 		'https://script.google.com/macros/s/AKfycbw_fWxPo-vBfhag9EyPXDL0MrXuTZnpZsexL7mBfX2vHUgEbC16WH4jq_GxaUq6EHvcpA/exec';
 
+	var RSVP_API_URL =
+		'https://script.google.com/macros/s/AKfycbzFbxiLdNpVsTFC2Y-CEKBjARS7fBnUo_xHBli6GaN3_zkY5zRpR99y5GoX6vTGlm1COg/exec';
+
+	var GUEST_NAME_STORAGE_KEY = 'nuptialGuestName';
+
+	var storeGuestName = function(name) {
+		var trimmed = String(name || '').trim();
+
+		if (!trimmed || trimmed === 'Tamu Undangan') {
+			return;
+		}
+
+		try {
+			sessionStorage.setItem(GUEST_NAME_STORAGE_KEY, trimmed);
+		} catch (error) {}
+	};
+
+	var readStoredGuestName = function() {
+		try {
+			return String(sessionStorage.getItem(GUEST_NAME_STORAGE_KEY) || '').trim();
+		} catch (error) {
+			return '';
+		}
+	};
+
 	var getGuestCodeFromUrl = function() {
 		var params = new URLSearchParams(window.location.search);
 		var pathMatch = window.location.pathname.match(/\/tamu\/([^/]+)\/?$/i);
@@ -389,6 +456,7 @@
 		var setGuestName = function(name) {
 			if (name) {
 				guestName.text(name);
+				storeGuestName(name);
 			}
 		};
 
@@ -522,10 +590,191 @@
 		});
 	};
 
+	var fillKehadiranName = function() {
+		var input = $('#kehadiran-name');
+
+		if (!input.length) {
+			return Promise.resolve(null);
+		}
+
+		var applyName = function(name) {
+			var trimmed = String(name || '').trim();
+
+			if (!trimmed || trimmed === 'Tamu Undangan') {
+				return null;
+			}
+
+			input.val(trimmed);
+			input.prop('disabled', true);
+			input.attr('aria-readonly', 'true');
+			storeGuestName(trimmed);
+			return trimmed;
+		};
+
+		var storedName = readStoredGuestName();
+		if (applyName(storedName)) {
+			return Promise.resolve(storedName);
+		}
+
+		var guestCode = getGuestCodeFromUrl();
+		if (!guestCode) {
+			return Promise.resolve(null);
+		}
+
+		var requestUrl = GUESTS_API_URL +
+			(GUESTS_API_URL.indexOf('?') === -1 ? '?' : '&') +
+			'code=' + encodeURIComponent(guestCode);
+
+		return fetch(requestUrl, { cache: 'no-store' })
+			.then(function(response) {
+				if (!response.ok) {
+					throw new Error('Guest name could not be loaded.');
+				}
+				return response.json();
+			})
+			.then(function(guest) {
+				if (Array.isArray(guest)) {
+					var normalizedCode = guestCode.toLowerCase();
+					guest = guest.find(function(item) {
+						return item.code && item.code.toLowerCase() === normalizedCode;
+					});
+				}
+
+				return applyName(guest && guest.name ? guest.name : '');
+			})
+			.catch(function() {
+				return null;
+			});
+	};
+
+	var escapeHtml = function(value) {
+		return String(value || '')
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	};
+
+	var renderUcapanList = function(items) {
+		var list = $('#ucapan-list');
+
+		if (!list.length) {
+			return;
+		}
+
+		if (!items || !items.length) {
+			list.html('<p class="text-muted" id="ucapan-empty">Belum ada ucapan. Jadilah yang pertama.</p>');
+			return;
+		}
+
+		var html = items.map(function(item) {
+			var nama = escapeHtml(item.nama || item.name || 'Tamu');
+			var ucapan = escapeHtml(item.ucapan || item.pesan || item.message || '');
+
+			if (!ucapan) {
+				return '';
+			}
+
+			return '' +
+				'<div class="panel panel-default">' +
+					'<div class="panel-body">' +
+						'<h3>' + nama + '</h3>' +
+						'<p>' + ucapan + '</p>' +
+					'</div>' +
+				'</div>';
+		}).join('');
+
+		list.html(html || '<p class="text-muted" id="ucapan-empty">Belum ada ucapan. Jadilah yang pertama.</p>');
+	};
+
+	var loadUcapanList = function() {
+		var list = $('#ucapan-list');
+
+		if (!list.length) {
+			return Promise.resolve([]);
+		}
+
+		return fetch(RSVP_API_URL, { cache: 'no-store' })
+			.then(function(response) {
+				if (!response.ok) {
+					throw new Error('Ucapan list could not be loaded.');
+				}
+				return response.json();
+			})
+			.then(function(items) {
+				var rows = Array.isArray(items) ? items : [];
+				renderUcapanList(rows);
+				return rows;
+			})
+			.catch(function() {
+				return [];
+			});
+	};
+
 	var staticForms = function() {
-		$('#fh5co-started form, #ucapan form').on('submit', function(e) {
+		$('#fh5co-started form').on('submit', function(e) {
 			e.preventDefault();
 			$(this).find('button[type="submit"]').text('Terkirim');
+		});
+
+		$('#kehadiran-form, #ucapan form').on('submit', function(e) {
+			e.preventDefault();
+
+			var form = $(this);
+			var submitButton = form.find('button[type="submit"]');
+			var originalLabel = submitButton.text();
+			var nameInput = $('#kehadiran-name');
+			var payload = {
+				action: 'rsvp',
+				nama: String(nameInput.val() || '').trim(),
+				kehadiran: String($('#kehadiran-attendance').val() || '').trim(),
+				alamat: String($('#kehadiran-address').val() || '').trim(),
+				jumlah: String($('#kehadiran-guests').val() || '').trim(),
+				ucapan: String($('#kehadiran-message').val() || '').trim()
+			};
+
+			if (!payload.nama) {
+				alert('Nama wajib diisi.');
+				return;
+			}
+
+			if (!payload.ucapan) {
+				alert('Ucapan wajib diisi.');
+				return;
+			}
+
+			if (submitButton.prop('disabled')) {
+				return;
+			}
+
+			submitButton.prop('disabled', true).text('Mengirim...');
+
+			fetch(RSVP_API_URL, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'text/plain;charset=utf-8'
+				},
+				body: JSON.stringify(payload),
+				redirect: 'follow'
+			})
+				.then(function() {
+					submitButton.text('Terkirim');
+					$('#kehadiran-attendance').prop('selectedIndex', 0);
+					$('#kehadiran-address').val('');
+					$('#kehadiran-guests').val('');
+					$('#kehadiran-message').val('');
+					return loadUcapanList();
+				})
+				.catch(function() {
+					submitButton.prop('disabled', false).text(originalLabel);
+					alert('Gagal mengirim. Coba lagi.');
+				})
+				.then(function() {
+					window.setTimeout(function() {
+						submitButton.prop('disabled', false).text(originalLabel);
+					}, 2000);
+				});
 		});
 	};
 
@@ -580,7 +829,6 @@
 
 		try {
 			parallax();
-			contentWayPoint();
 			invitationBackLink();
 			invitationGate();
 			musicToggle();
@@ -590,10 +838,10 @@
 			smoothScroll();
 			staticForms();
 			copyGiftNumber();
+			fillKehadiranName();
+			loadUcapanList();
 
-			if ($('#invitation-content').length) {
-				initInvitationEffects();
-			}
+			bootInvitationPage();
 		} catch (error) {}
 	});
 

@@ -45,6 +45,13 @@
 	<![endif]-->
 	</head>
 	<body class="invitation-page">
+		<div id="invitation-loader" class="invitation-loader" aria-live="polite" aria-busy="true">
+			<div class="invitation-loader__inner">
+				<div class="invitation-loader__spinner" aria-hidden="true"></div>
+				<p class="invitation-loader__label">Memuat undangan...</p>
+				<p class="invitation-loader__progress">0%</p>
+			</div>
+		</div>
 		<div id="fh5co-wrapper">
 		<div id="fh5co-page">
 
@@ -325,7 +332,7 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6 animate-box">
-								<form>
+								<form id="kehadiran-form">
 									<div class="form-group">
 										<label for="kehadiran-name" class="sr-only">Nama</label>
 										<input type="text" class="form-control" id="kehadiran-name" placeholder="Nama">
@@ -353,17 +360,8 @@
 								</form>
 							</div>
 							<div class="col-md-6 animate-box">
-								<div class="panel panel-default">
-									<div class="panel-body">
-										<h3>Sarah</h3>
-										<p>Selamat menempuh hidup baru. Semoga menjadi keluarga yang bahagia dan penuh berkah.</p>
-									</div>
-								</div>
-								<div class="panel panel-default">
-									<div class="panel-body">
-										<h3>Andre</h3>
-										<p>Semoga lancar sampai hari H dan selalu diberikan kebahagiaan.</p>
-									</div>
+								<div id="ucapan-list" aria-live="polite">
+									<p class="text-muted" id="ucapan-empty">Belum ada ucapan. Jadilah yang pertama.</p>
 								</div>
 							</div>
 						</div>
@@ -471,6 +469,7 @@
 	<script src="js/effects/scroll-animations.js"></script>
 	<script src="js/effects/petals.js"></script>
 	<script src="js/effects/gallery-swiper.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/invitation-preloader.js"></script>
+	<script src="js/main.js?v=6"></script>
 	</body>
 </html>

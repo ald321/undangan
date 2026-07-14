@@ -2,6 +2,7 @@
 	'use strict';
 
 	var ASSET_TIMEOUT_MS = 12000;
+	var CRITICAL_TIMEOUT_MS = 20000;
 
 	var INVITATION_ASSETS = [
 		'images/journey-couple-photo.png',
@@ -19,6 +20,20 @@
 		'images/closing-couple-photo.png',
 		'images/closing-floral-bg.png',
 		'music/wedding.mp3'
+	];
+
+	// Must be ready before invitation scroll animations start.
+	var CRITICAL_ASSETS = [
+		'images/journey-couple-photo.png',
+		'images/journey-section-bg.png',
+		'images/bride.jpg',
+		'images/groom.jpg',
+		'images/profile-frame-joglo.png'
+	];
+
+	var CRITICAL_IMG_SELECTORS = [
+		'#invitation-content .journey-photo',
+		'#invitation-content .profile-photo'
 	];
 
 	var getAssetBase = function() {
@@ -43,6 +58,7 @@
 			return;
 		}
 		loader.hidden = false;
+		loader.removeAttribute('hidden');
 		loader.setAttribute('aria-busy', 'true');
 		updateProgress(0);
 	};
@@ -53,6 +69,7 @@
 			return;
 		}
 		loader.hidden = true;
+		loader.setAttribute('hidden', '');
 		loader.setAttribute('aria-busy', 'false');
 	};
 
@@ -63,40 +80,74 @@
 		}
 	};
 
-	var preloadOne = function(url) {
-		return new Promise(function(resolve) {
+	var decodeImage = function(img) {
+		if (img && typeof img.decode === 'function') {
+			return img.decode().catch(function() {
+				return undefined;
+			});
+		}
+		return Promise.resolve();
+	};
+
+	var preloadOne = function(url, options) {
+		options = options || {};
+		var timeoutMs = options.timeoutMs || ASSET_TIMEOUT_MS;
+		var requireSuccess = !!options.requireSuccess;
+
+		return new Promise(function(resolve, reject) {
 			var finished = false;
 			var isAudio = /\.(mp3|wav|ogg|m4a)$/i.test(url);
 			var media;
+			var timer;
 
-			var finish = function() {
+			var finish = function(ok) {
 				if (finished) {
 					return;
 				}
 				finished = true;
-				resolve();
+				if (timer) {
+					clearTimeout(timer);
+				}
+				if (requireSuccess && !ok) {
+					reject(new Error('Failed to load ' + url));
+					return;
+				}
+				resolve(ok);
 			};
 
-			setTimeout(finish, ASSET_TIMEOUT_MS);
+			timer = setTimeout(function() {
+				finish(!requireSuccess);
+			}, timeoutMs);
 
 			if (isAudio) {
 				media = new Audio();
 				media.preload = 'auto';
-				media.addEventListener('canplaythrough', finish, { once: true });
-				media.addEventListener('error', finish, { once: true });
+				media.addEventListener('canplaythrough', function() {
+					finish(true);
+				}, { once: true });
+				media.addEventListener('error', function() {
+					finish(false);
+				}, { once: true });
 				media.src = url;
 				media.load();
 				return;
 			}
 
 			media = new Image();
-			media.onload = finish;
-			media.onerror = finish;
+			media.onload = function() {
+				decodeImage(media).then(function() {
+					finish(true);
+				});
+			};
+			media.onerror = function() {
+				finish(false);
+			};
 			media.src = url;
 		});
 	};
 
-	var preload = function(urls, onProgress) {
+	var preload = function(urls, onProgress, options) {
+		options = options || {};
 		var list = (urls || INVITATION_ASSETS).map(withAssetBase);
 		var loaded = 0;
 		var total = list.length;
@@ -109,20 +160,111 @@
 		}
 
 		return Promise.all(list.map(function(url) {
-			return preloadOne(url).then(function() {
-				loaded += 1;
+			return preloadOne(url, options)
+				.catch(function() {
+					return false;
+				})
+				.then(function() {
+					loaded += 1;
+					if (onProgress) {
+						onProgress(Math.round((loaded / total) * 100));
+					}
+				});
+		}));
+	};
+
+	var waitForImageElement = function(img, timeoutMs) {
+		return new Promise(function(resolve) {
+			var done = false;
+			var finish = function() {
+				if (done) {
+					return;
+				}
+				done = true;
+				resolve();
+			};
+
+			setTimeout(finish, timeoutMs || CRITICAL_TIMEOUT_MS);
+
+			if (!img) {
+				finish();
+				return;
+			}
+
+			if (img.complete && img.naturalWidth > 0) {
+				decodeImage(img).then(finish);
+				return;
+			}
+
+			img.addEventListener('load', function() {
+				decodeImage(img).then(finish);
+			}, { once: true });
+			img.addEventListener('error', finish, { once: true });
+		});
+	};
+
+	var waitForDomImages = function(selectors, timeoutMs) {
+		var list = selectors || CRITICAL_IMG_SELECTORS;
+		var nodes = [];
+
+		list.forEach(function(selector) {
+			document.querySelectorAll(selector).forEach(function(node) {
+				nodes.push(node);
+			});
+		});
+
+		if (!nodes.length) {
+			return Promise.resolve();
+		}
+
+		return Promise.all(nodes.map(function(img) {
+			return waitForImageElement(img, timeoutMs);
+		}));
+	};
+
+	var waitForCriticalAssets = function(onProgress) {
+		var criticalUrls = CRITICAL_ASSETS.map(withAssetBase);
+		var loaded = 0;
+		var total = criticalUrls.length + 1;
+
+		var tick = function() {
+			loaded += 1;
+			if (onProgress) {
+				onProgress(Math.min(100, Math.round((loaded / total) * 100)));
+			}
+		};
+
+		var preloadCritical = Promise.all(criticalUrls.map(function(url) {
+			return preloadOne(url, {
+				timeoutMs: CRITICAL_TIMEOUT_MS,
+				requireSuccess: false
+			})
+				.catch(function() {
+					return false;
+				})
+				.then(tick);
+		}));
+
+		return preloadCritical
+			.then(function() {
+				return waitForDomImages(CRITICAL_IMG_SELECTORS, CRITICAL_TIMEOUT_MS);
+			})
+			.then(function() {
+				tick();
 				if (onProgress) {
-					onProgress(Math.round((loaded / total) * 100));
+					onProgress(100);
 				}
 			});
-		}));
 	};
 
 	window.NuptialPreloader = {
 		assets: INVITATION_ASSETS,
+		criticalAssets: CRITICAL_ASSETS,
 		show: show,
 		hide: hide,
 		updateProgress: updateProgress,
-		preload: preload
+		preload: preload,
+		waitForDomImages: waitForDomImages,
+		waitForCriticalAssets: waitForCriticalAssets
 	};
 }(window));
