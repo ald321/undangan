@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T09:32:27.240296+00:00",
+  "generatedAt": "2026-07-14T03:43:07.450782+00:00",
   "baseUrl": "https://ald321.github.io/undangan",
   "mode": "B",
   "sharePattern": "{baseUrl}/tamu/{code}/",
@@ -7,31 +7,31 @@
   "guests": [
     {
       "code": "0f54b8bc-7fe5-4015-aeb4-ad23c6500220",
-      "name": "Grady",
+      "name": "Bapak Grady & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/0f54b8bc-7fe5-4015-aeb4-ad23c6500220/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=0f54b8bc-7fe5-4015-aeb4-ad23c6500220"
     },
     {
       "code": "3a590a62-2f7c-4240-822b-709e50319dbd",
-      "name": "Alghi",
+      "name": "Alghiefari Zatur Moreno",
       "shareUrl": "https://ald321.github.io/undangan/tamu/3a590a62-2f7c-4240-822b-709e50319dbd/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=3a590a62-2f7c-4240-822b-709e50319dbd"
     },
     {
       "code": "c908492e-3450-493b-b09f-3c70327a10a6",
-      "name": "Audrey",
+      "name": "Gabriella Audrey Vienty",
       "shareUrl": "https://ald321.github.io/undangan/tamu/c908492e-3450-493b-b09f-3c70327a10a6/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=c908492e-3450-493b-b09f-3c70327a10a6"
     },
     {
       "code": "70cc7943-2b9a-49c1-96ae-393b12623625",
-      "name": "Ka Elfi",
+      "name": "Elfi Hidayati",
       "shareUrl": "https://ald321.github.io/undangan/tamu/70cc7943-2b9a-49c1-96ae-393b12623625/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=70cc7943-2b9a-49c1-96ae-393b12623625"
     },
     {
       "code": "0bfb29ca-a453-4bce-b704-fe31d1d1816d",
-      "name": "Pauline",
+      "name": "Njimou Pauline",
       "shareUrl": "https://ald321.github.io/undangan/tamu/0bfb29ca-a453-4bce-b704-fe31d1d1816d/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=0bfb29ca-a453-4bce-b704-fe31d1d1816d"
     },
@@ -61,13 +61,13 @@
     },
     {
       "code": "7eaa50cb-c3d6-4f8e-b804-7c06541b9a22",
-      "name": "Felyda",
+      "name": "Felyda Audia & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/7eaa50cb-c3d6-4f8e-b804-7c06541b9a22/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=7eaa50cb-c3d6-4f8e-b804-7c06541b9a22"
     },
     {
       "code": "a572acfb-a2dc-497e-ab1d-4b8051b20e0b",
-      "name": "Silvester",
+      "name": "Silvester Doringin",
       "shareUrl": "https://ald321.github.io/undangan/tamu/a572acfb-a2dc-497e-ab1d-4b8051b20e0b/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=a572acfb-a2dc-497e-ab1d-4b8051b20e0b"
     },
@@ -79,61 +79,61 @@
     },
     {
       "code": "9d793b4a-e286-4d58-96f0-e49d757aa339",
-      "name": "Jheremy",
+      "name": "Jheremy Peop",
       "shareUrl": "https://ald321.github.io/undangan/tamu/9d793b4a-e286-4d58-96f0-e49d757aa339/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=9d793b4a-e286-4d58-96f0-e49d757aa339"
     },
     {
       "code": "51531d16-c13a-4a3d-867e-e282f5490d39",
-      "name": "Gabriel Sesko",
+      "name": "Gabriel Sesco",
       "shareUrl": "https://ald321.github.io/undangan/tamu/51531d16-c13a-4a3d-867e-e282f5490d39/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=51531d16-c13a-4a3d-867e-e282f5490d39"
     },
     {
       "code": "9abd3c6a-0729-4bfb-818a-c2e355837b1b",
-      "name": "Risma",
+      "name": "Risma Octa",
       "shareUrl": "https://ald321.github.io/undangan/tamu/9abd3c6a-0729-4bfb-818a-c2e355837b1b/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=9abd3c6a-0729-4bfb-818a-c2e355837b1b"
     },
     {
       "code": "d8512eb2-d6f7-4407-baea-98a2c8c5760a",
-      "name": "Puning",
+      "name": "Putri Ningrum",
       "shareUrl": "https://ald321.github.io/undangan/tamu/d8512eb2-d6f7-4407-baea-98a2c8c5760a/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=d8512eb2-d6f7-4407-baea-98a2c8c5760a"
     },
     {
       "code": "0070a3dd-2271-4340-ae72-48a164e37ac5",
-      "name": "Aulia",
+      "name": "Aulia Maulidina & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/0070a3dd-2271-4340-ae72-48a164e37ac5/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=0070a3dd-2271-4340-ae72-48a164e37ac5"
     },
     {
       "code": "5b3459f2-01d3-477c-9287-e698b3d92b3f",
-      "name": "Decky",
+      "name": "Decky Riadi",
       "shareUrl": "https://ald321.github.io/undangan/tamu/5b3459f2-01d3-477c-9287-e698b3d92b3f/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=5b3459f2-01d3-477c-9287-e698b3d92b3f"
     },
     {
       "code": "febc3a65-e350-496c-aa1b-4641a24eeaa9",
-      "name": "Ka Haikal",
+      "name": "Ka Akmal Haikal & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/febc3a65-e350-496c-aa1b-4641a24eeaa9/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=febc3a65-e350-496c-aa1b-4641a24eeaa9"
     },
     {
       "code": "84f13917-67a7-4657-aa08-942e1bd868f9",
-      "name": "Bang Ganang",
+      "name": "Bang Ganang & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/84f13917-67a7-4657-aa08-942e1bd868f9/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=84f13917-67a7-4657-aa08-942e1bd868f9"
     },
     {
       "code": "caa76812-36ea-45b2-ae08-2f2b4b78c5e4",
-      "name": "Zadit",
+      "name": "Zadit & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/caa76812-36ea-45b2-ae08-2f2b4b78c5e4/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=caa76812-36ea-45b2-ae08-2f2b4b78c5e4"
     },
     {
       "code": "2694b2af-8c1c-4559-8506-d17926ae8cf2",
-      "name": "Pak Ponda",
+      "name": "Bapak Ponda & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/2694b2af-8c1c-4559-8506-d17926ae8cf2/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=2694b2af-8c1c-4559-8506-d17926ae8cf2"
     },
@@ -151,37 +151,37 @@
     },
     {
       "code": "da25d917-ba45-46fc-b07b-0588da7f7016",
-      "name": "Memei",
+      "name": "Memei Meilani",
       "shareUrl": "https://ald321.github.io/undangan/tamu/da25d917-ba45-46fc-b07b-0588da7f7016/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=da25d917-ba45-46fc-b07b-0588da7f7016"
     },
     {
       "code": "31b2755c-2b68-4fa0-8723-0659c8753262",
-      "name": "Kholis",
+      "name": "Kholis Majid",
       "shareUrl": "https://ald321.github.io/undangan/tamu/31b2755c-2b68-4fa0-8723-0659c8753262/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=31b2755c-2b68-4fa0-8723-0659c8753262"
     },
     {
       "code": "72727c56-5353-4fb4-a25e-f12d5a483755",
-      "name": "Andre",
+      "name": "Andre Kharisma",
       "shareUrl": "https://ald321.github.io/undangan/tamu/72727c56-5353-4fb4-a25e-f12d5a483755/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=72727c56-5353-4fb4-a25e-f12d5a483755"
     },
     {
       "code": "1c810fc8-38d3-4b70-91ee-7fff9bf07d68",
-      "name": "Ka Nyo",
+      "name": "Ka Nyoman Susari & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/1c810fc8-38d3-4b70-91ee-7fff9bf07d68/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=1c810fc8-38d3-4b70-91ee-7fff9bf07d68"
     },
     {
       "code": "7b40fec4-dc95-41f6-bb16-f1e3c874fb6c",
-      "name": "Panji Sasha",
+      "name": "Panji & Shasa",
       "shareUrl": "https://ald321.github.io/undangan/tamu/7b40fec4-dc95-41f6-bb16-f1e3c874fb6c/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=7b40fec4-dc95-41f6-bb16-f1e3c874fb6c"
     },
     {
       "code": "936aa651-4c4d-48c6-99c6-fb998aff45da",
-      "name": "Mba Sisil",
+      "name": "Mba Silvani & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/936aa651-4c4d-48c6-99c6-fb998aff45da/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=936aa651-4c4d-48c6-99c6-fb998aff45da"
     },
