@@ -129,6 +129,11 @@
 				document.documentElement.classList.remove('invitation-assets-loading');
 				if (preloader) {
 					preloader.hide();
+					if (typeof preloader.scheduleIdle === 'function' && typeof preloader.preloadDeferred === 'function') {
+						preloader.scheduleIdle(function() {
+							preloader.preloadDeferred();
+						}, 1500);
+					}
 				}
 				contentWayPoint();
 				initInvitationEffects();
@@ -186,7 +191,8 @@
 
 				if (preloader) {
 					preloader.show();
-					preloader.preload(preloader.assets, preloader.updateProgress).then(openAfterPreload);
+					var openList = preloader.openAssets || preloader.assets;
+					preloader.preload(openList, preloader.updateProgress).then(openAfterPreload);
 					return;
 				}
 

@@ -1248,89 +1248,11 @@ body.invitation-page #invitation-content {
 
 #invitation-content .invitation-slide-closing-bg {
   position: relative;
-  background: transparent;
+  min-height: min(100dvh, 920px);
+  padding: 0;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-floral-frame {
-  position: relative;
-  z-index: 1;
-  width: min(420px, 90vw);
-  height: min(calc(100dvh - 96px), 820px);
-  box-sizing: border-box;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  padding: 5.5vh 5vw 4.5vh;
-  background: url(../images/closing-floral-bg.png) center center / 100% 100% no-repeat;
+  background: #f7f1e8 url(../images/closing-thankyou.png) center center / cover no-repeat;
   will-change: transform, opacity;
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-photo-wrap {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  padding: 10px;
-  box-sizing: border-box;
-  background: linear-gradient(160deg, #edd080 0%, #b8860b 45%, #d4af37 100%);
-  box-shadow: 0 14px 36px rgba(72, 38, 43, 0.2);
-  border-radius: 2px;
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-photo-media {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-  border-radius: 1px;
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-photo-media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.31);
-  pointer-events: none;
-  z-index: 1;
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-photo {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 35%;
-  filter: brightness(0.41);
-}
-
-#invitation-content .invitation-slide-closing-bg .closing-content {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 18px;
-  text-align: center;
-  background: transparent;
 }
 
 .invitation-slide.is-active .invitation-card {
@@ -1394,6 +1316,10 @@ body.invitation-page #invitation-content {
   width: min(520px, 92vw);
 }
 
+#invitation-content .invitation-card:has(#fh5co-couple) {
+  overflow: visible;
+}
+
 #invitation-content .akan-menikah-photo {
   line-height: 0;
 }
@@ -1438,12 +1364,86 @@ body.invitation-page #invitation-content {
 }
 
 #invitation-content .invitation-card.invitation-card-journey {
+  position: relative;
   width: min(380px, 92vw);
-  padding: 56px 28px 40px;
+  padding: 48px 28px 150px;
+  margin-top: -28px;
   background: linear-gradient(180deg, #fce4ec 0%, #fdf2f0 100%) !important;
   border: none;
   box-shadow: 0 22px 56px rgba(72, 38, 43, 0.14);
   border-radius: 50% 50% 24px 24px / 22% 22% 24px 24px;
+  overflow: visible;
+}
+
+#invitation-content .invitation-card.invitation-card-profile {
+  position: relative;
+  overflow: visible;
+  padding-bottom: 0;
+}
+
+#invitation-content .invitation-card.invitation-card-acara {
+  background-color: #faf6f0;
+  background-image: url("../images/acara-card-bg.png");
+  background-size: 100% auto;
+  background-position: center 72px;
+  background-repeat: no-repeat;
+}
+
+#invitation-content .invitation-card-acara .wedding-events {
+  background: rgba(255, 252, 251, 0.28);
+}
+
+@media screen and (max-width: 768px) {
+  #invitation-content #acara .heading-section p {
+    font-size: calc(var(--inv-text-md) * 0.7);
+  }
+}
+
+#invitation-content .profile-card-floral {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: calc(100% + 48px);
+  max-width: none;
+  margin: 4px 0 -28px -24px;
+  padding: 0;
+  pointer-events: none;
+}
+
+#invitation-content .profile-card-joglo {
+  display: block;
+  width: clamp(360px, 108%, 980px);
+  max-width: none;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 0;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+#invitation-content .journey-floral {
+  position: absolute;
+  left: 50%;
+  bottom: -10%;
+  z-index: 2;
+  width: min(118%, 440px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#invitation-content .journey-floral-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#invitation-content .journey-section {
+  position: relative;
+  z-index: 3;
+  padding-bottom: 12px;
 }
 
 #invitation-content .journey-photo-wrap {
@@ -1508,8 +1508,24 @@ body.invitation-page #invitation-content {
 @media screen and (max-width: 768px) {
   #invitation-content .invitation-card.invitation-card-journey {
     width: min(340px, 90vw);
-    padding: 48px 22px 36px;
+    padding: 40px 22px 132px;
+    margin-top: -20px;
     border-radius: 50% 50% 20px 20px / 20% 20% 20px 20px;
+  }
+
+  #invitation-content .journey-floral {
+    width: min(122%, 380px);
+    bottom: -8%;
+  }
+
+  #invitation-content .profile-card-floral {
+    width: calc(100% + 36px);
+    margin: 4px 0 -22px -18px;
+  }
+
+  #invitation-content .profile-card-joglo {
+    width: clamp(300px, 112%, 560px);
+    border-radius: 0;
   }
 }
 
@@ -1589,7 +1605,7 @@ body.invitation-page #invitation-content {
   padding: 12px 20px;
   border-radius: 999px;
   background: linear-gradient(90deg, #6b2438 0%, #c96b7a 100%);
-  color: #fff;
+  color: #fffaf7;
   font-family: "Times New Roman", Times, serif;
   font-size: clamp(10px, 2.4vw, 12px);
   font-weight: 400;
@@ -1602,10 +1618,15 @@ body.invitation-page #invitation-content {
 
 #invitation-content .btn-countdown-calendar:hover,
 #invitation-content .btn-countdown-calendar:focus {
-  color: #fff;
+  color: #fffaf7;
   text-decoration: none;
   transform: translateY(-1px);
   box-shadow: 0 14px 32px rgba(107, 36, 56, 0.34);
+}
+
+#invitation-content .btn-countdown-calendar .icon-calendar,
+#invitation-content .btn-countdown-calendar span {
+  color: #fffaf7;
 }
 
 #invitation-content .btn-countdown-calendar .icon-calendar {
@@ -1650,6 +1671,7 @@ body.invitation-page #invitation-content {
 
 #invitation-content .invitation-card #fh5co-couple,
 #invitation-content .invitation-card #fh5co-when-where,
+#invitation-content .invitation-card #fh5co-location,
 #invitation-content .invitation-card #fh5co-gallery,
 #invitation-content .invitation-card #fh5co-countdown,
 #invitation-content .invitation-card #fh5co-started,
@@ -1680,6 +1702,7 @@ body.invitation-page #invitation-content {
 #invitation-content .invitation-card .couple-profile > div:not(.col-md-2),
 #invitation-content .invitation-card .wedding-events,
 #invitation-content .invitation-card .panel-default {
+  position: relative;
   background: rgba(255, 252, 251, 0.72);
   border: 1px solid rgba(246, 157, 157, 0.18);
   border-radius: 16px;
@@ -1799,49 +1822,6 @@ body.invitation-page #invitation-content {
   font-size: clamp(28px, 7vw, 34px);
 }
 
-#invitation-content .closing-content {
-  padding: 24px 18px;
-}
-
-#invitation-content .closing-title {
-  margin: 0 0 12px;
-  font-family: "Times New Roman", Times, serif;
-  font-size: clamp(22px, 4.5vw, 28px);
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-}
-
-#invitation-content .closing-message,
-#invitation-content .closing-signoff {
-  color: #fff;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
-}
-
-#invitation-content .closing-message {
-  margin: 0 0 14px;
-  font-size: clamp(12px, 3.2vw, 14px);
-  line-height: 1.75;
-}
-
-#invitation-content .closing-signoff {
-  margin: 0 0 10px;
-  font-size: clamp(12px, 3.2vw, 14px);
-  line-height: 1.65;
-  opacity: 0.92;
-}
-
-#invitation-content .closing-names {
-  margin: 0;
-  font-family: "Allura", cursive;
-  font-size: clamp(32px, 8vw, 44px);
-  font-weight: 400;
-  line-height: 1.1;
-  color: #fff;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-}
-
 #invitation-content #fh5co-countdown .countdown {
   color: #F69D9D;
 }
@@ -1927,7 +1907,7 @@ body.invitation-page #invitation-content {
 
 #invitation-content .couple-profile > div:not(.col-md-2) {
   padding: 0 0 28px !important;
-  overflow: hidden;
+  overflow: visible;
   color: #6b5f5f;
 }
 
@@ -1957,7 +1937,7 @@ body.invitation-page #invitation-content {
   font-family: "Allura", cursive;
   font-size: var(--inv-text-script);
   color: #5c2e35;
-  margin: 12px 0 4px;
+  margin: 2px 0 4px;
   line-height: 1.2;
 }
 
@@ -1980,26 +1960,181 @@ body.invitation-page #invitation-content {
   border-radius: 16px 16px 0 0;
 }
 
-#invitation-content #fh5co-couple .profile-photo-frame {
-  width: 100%;
-  max-width: none;
+#invitation-content #fh5co-couple .profile-portrait {
+  position: relative;
+  z-index: 1;
   display: block;
-  margin: 0 0 16px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 0;
+  overflow: visible;
+  background: transparent;
+}
+
+#invitation-content #fh5co-couple .profile-portrait-img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: contain;
+  object-position: center top;
+  background: transparent;
+}
+
+#invitation-content #fh5co-couple .profile-accent {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 46%;
+  width: 42%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: center center;
+  opacity: 0;
+  mix-blend-mode: normal;
+  --end-x: 0%;
+  --end-y: 0%;
+  --end-rot: 0deg;
+  --end-scale: 0.87;
+  --mirror: 1;
+  transform: translate(-50%, -50%) scale(0.06);
+}
+
+/* Ring around portrait — grow out from torso center */
+#invitation-content #fh5co-couple .profile-accent--1 {
+  width: 51%;
+  --end-x: -46%;
+  --end-y: -30%;
+  --end-rot: -18deg;
+  --end-scale: 1.01;
+}
+
+#invitation-content #fh5co-couple .profile-accent--2 {
+  width: 47%;
+  --end-x: 46%;
+  --end-y: -30%;
+  --end-rot: -18deg;
+  --end-scale: 0.96;
+  --mirror: -1;
+}
+
+#invitation-content #fh5co-couple .profile-accent--3 {
+  width: 44%;
+  --end-x: -52%;
+  --end-y: 2%;
+  --end-rot: -6deg;
+  --end-scale: 0.95;
+}
+
+#invitation-content #fh5co-couple .profile-accent--4 {
+  width: 44%;
+  --end-x: 52%;
+  --end-y: 2%;
+  --end-rot: -6deg;
+  --end-scale: 0.95;
+  --mirror: -1;
+}
+
+#invitation-content #fh5co-couple .profile-accent--5 {
+  width: 38%;
+  --end-x: -44%;
+  --end-y: 32%;
+  --end-rot: 12deg;
+  --end-scale: 0.87;
+}
+
+#invitation-content #fh5co-couple .profile-accent--6 {
+  width: 38%;
+  --end-x: 44%;
+  --end-y: 32%;
+  --end-rot: 12deg;
+  --end-scale: 0.87;
+  --mirror: -1;
+}
+
+#invitation-content #fh5co-couple .profile-accent--7 {
+  width: 34%;
+  --end-x: -22%;
+  --end-y: -48%;
+  --end-rot: -28deg;
+  --end-scale: 0.83;
+}
+
+#invitation-content #fh5co-couple .profile-accent--8 {
+  width: 34%;
+  --end-x: 22%;
+  --end-y: -48%;
+  --end-rot: -28deg;
+  --end-scale: 0.83;
+  --mirror: -1;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--1 {
+  animation: profileBlossomGrow 1.15s cubic-bezier(0.18, 0.84, 0.28, 1) 0.05s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--2 {
+  animation: profileBlossomGrow 1.15s cubic-bezier(0.18, 0.84, 0.28, 1) 0.12s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--3 {
+  animation: profileBlossomGrow 1.1s cubic-bezier(0.18, 0.84, 0.28, 1) 0.2s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--4 {
+  animation: profileBlossomGrow 1.1s cubic-bezier(0.18, 0.84, 0.28, 1) 0.28s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--5 {
+  animation: profileBlossomGrow 1.05s cubic-bezier(0.18, 0.84, 0.28, 1) 0.36s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--6 {
+  animation: profileBlossomGrow 1.05s cubic-bezier(0.18, 0.84, 0.28, 1) 0.44s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--7 {
+  animation: profileBlossomGrow 1s cubic-bezier(0.18, 0.84, 0.28, 1) 0.52s forwards;
+}
+
+#invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent--8 {
+  animation: profileBlossomGrow 1s cubic-bezier(0.18, 0.84, 0.28, 1) 0.6s forwards;
+}
+
+@keyframes profileBlossomGrow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.06) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--end-x)), calc(-50% + var(--end-y))) scaleX(var(--mirror)) scale(var(--end-scale)) rotate(var(--end-rot));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #invitation-content #fh5co-couple .profile-accent,
+  #invitation-content .invitation-slide.is-active #fh5co-couple .profile-accent {
+    animation: none !important;
+    opacity: 1;
+    transform: translate(calc(-50% + var(--end-x)), calc(-50% + var(--end-y))) scaleX(var(--mirror)) scale(var(--end-scale)) rotate(var(--end-rot));
+  }
+}
+
+#invitation-content #fh5co-couple .profile-photo-frame {
+  display: none;
 }
 
 #invitation-content #fh5co-couple .profile-photo,
 #invitation-content #fh5co-couple .couple-profile .profile-photo {
-  position: absolute;
-  inset: 0;
-  top: 9%;
-  left: 5%;
-  width: 90%;
-  height: 80%;
-  max-width: none;
-  max-height: none;
-  object-fit: cover;
-  object-position: center 18%;
-  margin-bottom: 0;
+  display: none;
 }
 
 #invitation-content .couple-parent,
@@ -2037,13 +2172,103 @@ body.invitation-page #invitation-content {
 
 #invitation-content .wedding-events .desc {
   border-top: none;
-  border-bottom: 1px solid rgba(246, 157, 157, 0.12);
+  border-bottom: none;
   padding: 1.75em 1.5em 1.5em;
+  border-radius: 0 0 16px 16px;
 }
 
 #invitation-content .wedding-events .ceremony-bg {
   border-radius: 0 0 16px 16px;
   overflow: hidden;
+}
+
+#invitation-content .location-venue {
+  margin: 0 0 6px;
+  color: #4f3f42;
+  font-size: var(--inv-text-base);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+#invitation-content .location-venue strong {
+  font-weight: 700;
+}
+
+#invitation-content .location-address {
+  margin: 0 0 8px;
+  color: #6f6464;
+  font-size: var(--inv-text-sm);
+  line-height: 1.7;
+}
+
+#invitation-content .location-card {
+  margin: 0 auto 8px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgba(255, 252, 251, 0.72);
+  border: 1px solid rgba(246, 157, 157, 0.18);
+}
+
+#invitation-content .location-denah {
+  margin: 0;
+  padding: 12px 12px 0;
+  line-height: 0;
+}
+
+#invitation-content .location-denah-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: #fff;
+}
+
+#invitation-content .location-map {
+  margin: 12px;
+  overflow: hidden;
+  border-radius: 12px;
+  line-height: 0;
+}
+
+#invitation-content .location-map iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 360px;
+  border: 0;
+}
+
+@media screen and (max-width: 768px) {
+  #invitation-content .location-map iframe {
+    height: 280px;
+  }
+
+  #invitation-content .location-denah {
+    padding: 10px 10px 0;
+  }
+
+  #invitation-content .location-map {
+    margin: 10px;
+  }
+}
+
+#invitation-content .location-maps-link {
+  margin: 0;
+  padding: 0 16px 18px;
+  text-align: center;
+}
+
+#invitation-content .location-maps-link a {
+  color: #F69D9D;
+  font-size: clamp(13px, 3vw, 15px);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#invitation-content .location-maps-link a:hover,
+#invitation-content .location-maps-link a:focus {
+  color: #e07a7a;
+  text-decoration: underline;
 }
 
 #invitation-content .wedding-events .desc h3 {
@@ -2115,6 +2340,120 @@ body.invitation-page #invitation-content {
   z-index: 2;
 }
 
+#fh5co-couple .profile-portrait {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 0;
+  overflow: visible;
+  background: transparent;
+}
+
+#fh5co-couple .profile-portrait-img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center top;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+#fh5co-couple .profile-accent {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 46%;
+  width: 42%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: center center;
+  opacity: 0;
+  mix-blend-mode: normal;
+  --end-x: 0%;
+  --end-y: 0%;
+  --end-rot: 0deg;
+  --end-scale: 0.87;
+  --mirror: 1;
+  transform: translate(-50%, -50%) scale(0.06);
+}
+
+#fh5co-couple .profile-accent--1 {
+  width: 51%;
+  --end-x: -46%;
+  --end-y: -30%;
+  --end-rot: -18deg;
+  --end-scale: 1.01;
+}
+
+#fh5co-couple .profile-accent--2 {
+  width: 47%;
+  --end-x: 46%;
+  --end-y: -30%;
+  --end-rot: -18deg;
+  --end-scale: 0.96;
+  --mirror: -1;
+}
+
+#fh5co-couple .profile-accent--3 {
+  width: 44%;
+  --end-x: -52%;
+  --end-y: 2%;
+  --end-rot: -6deg;
+  --end-scale: 0.95;
+}
+
+#fh5co-couple .profile-accent--4 {
+  width: 44%;
+  --end-x: 52%;
+  --end-y: 2%;
+  --end-rot: -6deg;
+  --end-scale: 0.95;
+  --mirror: -1;
+}
+
+#fh5co-couple .profile-accent--5 {
+  width: 38%;
+  --end-x: -44%;
+  --end-y: 32%;
+  --end-rot: 12deg;
+  --end-scale: 0.87;
+}
+
+#fh5co-couple .profile-accent--6 {
+  width: 38%;
+  --end-x: 44%;
+  --end-y: 32%;
+  --end-rot: 12deg;
+  --end-scale: 0.87;
+  --mirror: -1;
+}
+
+#fh5co-couple .profile-accent--7 {
+  width: 34%;
+  --end-x: -22%;
+  --end-y: -48%;
+  --end-rot: -28deg;
+  --end-scale: 0.83;
+}
+
+#fh5co-couple .profile-accent--8 {
+  width: 34%;
+  --end-x: 22%;
+  --end-y: -48%;
+  --end-rot: -28deg;
+  --end-scale: 0.83;
+  --mirror: -1;
+}
+
 #fh5co-couple .couple-profile .profile-photo {
   position: absolute;
   top: 9%;
@@ -2137,6 +2476,10 @@ body.invitation-page #invitation-content {
 
 #fh5co-couple img {
   margin-bottom: 20px;
+}
+
+#fh5co-couple .profile-portrait-img {
+  margin-bottom: 0;
 }
 
 #fh5co-couple .couple-profile > div:not(.col-md-2) {
@@ -3161,14 +3504,46 @@ body.invitation-page #invitation-content {
     margin-left: auto;
     margin-right: auto;
   }
+  #invitation-content #fh5co-couple .profile-portrait {
+    max-width: min(100%, 340px);
+  }
+  #invitation-content #fh5co-couple .profile-accent {
+    width: 40%;
+  }
+  #invitation-content #fh5co-couple .profile-accent--1 {
+    width: 49%;
+    --end-x: -42%;
+    --end-y: -28%;
+  }
+  #invitation-content #fh5co-couple .profile-accent--2 {
+    width: 46%;
+    --end-x: 42%;
+    --end-y: -28%;
+  }
+  #invitation-content #fh5co-couple .profile-accent--3,
+  #invitation-content #fh5co-couple .profile-accent--4 {
+    width: 42%;
+    --end-x: -48%;
+  }
+  #invitation-content #fh5co-couple .profile-accent--4 {
+    --end-x: 48%;
+  }
+  #invitation-content #fh5co-couple .profile-accent--5,
+  #invitation-content #fh5co-couple .profile-accent--6 {
+    width: 34%;
+  }
+  #invitation-content #fh5co-couple .profile-accent--7,
+  #invitation-content #fh5co-couple .profile-accent--8 {
+    width: 32%;
+  }
   #invitation-content #fh5co-couple .profile-photo-frame {
-    width: 100%;
-    max-width: none;
+    display: none;
   }
   #fh5co-couple,
   #fh5co-countdown,
   #fh5co-started,
   #fh5co-when-where,
+  #fh5co-location,
   #fh5co-gallery,
   .fh5co-content-section {
     padding: 4em 0;

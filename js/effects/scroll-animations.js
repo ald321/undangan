@@ -181,7 +181,7 @@
 			return (
 				slide.querySelector('.invitation-card') ||
 				slide.querySelector('.countdown-card') ||
-				slide.querySelector('.closing-floral-frame')
+				(slide.classList.contains('invitation-slide-closing-bg') ? slide : null)
 			);
 		},
 
@@ -189,7 +189,6 @@
 			var body =
 				card.querySelector('.invitation-section-body') ||
 				card.querySelector('.countdown-section') ||
-				card.querySelector('.closing-inner') ||
 				card;
 			var found = [];
 			var seen = typeof window.WeakSet === 'function' ? new window.WeakSet() : null;
@@ -222,12 +221,7 @@
 					'.gallery-swiper-wrap',
 					'.gallery-grid-desktop',
 					'.panel-default',
-					'form',
-					'.closing-photo-media',
-					'.closing-title',
-					'.closing-message',
-					'.closing-signoff',
-					'.closing-names'
+					'form'
 				].join(', ')
 			).forEach(pushUnique);
 

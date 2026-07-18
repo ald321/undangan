@@ -1,15 +1,29 @@
 (function(window) {
 	'use strict';
 
-	var ASSET_TIMEOUT_MS = 12000;
-	var CRITICAL_TIMEOUT_MS = 20000;
+	var ASSET_TIMEOUT_MS = 8000;
+	var CRITICAL_TIMEOUT_MS = 10000;
 
-	var INVITATION_ASSETS = [
+	// First screen only — used when opening invitation from cover.
+	var OPEN_ASSETS = [
 		'images/journey-couple-photo.png',
 		'images/journey-section-bg.png',
-		'images/bride.jpg',
-		'images/groom.jpg',
-		'images/profile-frame-joglo.png',
+		'images/journey-floral-bottom.png'
+	];
+
+	// Must be ready before invitation scroll animations start.
+	var CRITICAL_ASSETS = [
+		'images/journey-couple-photo.png',
+		'images/journey-section-bg.png',
+		'images/journey-floral-bottom.png'
+	];
+
+	// Loaded in the background after invitation is interactive.
+	var DEFERRED_ASSETS = [
+		'images/profile-dewi.png',
+		'images/profile-aldi.png',
+		'images/profile-blossom.png',
+		'images/profile-joglo-floral.png',
 		'images/couple-akan-menikah.png',
 		'images/gallery-1.png',
 		'images/gallery-2.png',
@@ -17,23 +31,16 @@
 		'images/gallery-4.png',
 		'images/gallery-5.png',
 		'images/gallery-6.png',
-		'images/closing-couple-photo.png',
-		'images/closing-floral-bg.png',
+		'images/closing-thankyou.png',
+		'images/denah-omah-joglo.png',
+		'images/acara-card-bg.png',
 		'music/wedding.mp3'
 	];
 
-	// Must be ready before invitation scroll animations start.
-	var CRITICAL_ASSETS = [
-		'images/journey-couple-photo.png',
-		'images/journey-section-bg.png',
-		'images/bride.jpg',
-		'images/groom.jpg',
-		'images/profile-frame-joglo.png'
-	];
+	var INVITATION_ASSETS = OPEN_ASSETS.concat(DEFERRED_ASSETS);
 
 	var CRITICAL_IMG_SELECTORS = [
-		'#invitation-content .journey-photo',
-		'#invitation-content .profile-photo'
+		'#invitation-content .journey-photo'
 	];
 
 	var getAssetBase = function() {
@@ -121,7 +128,10 @@
 
 			if (isAudio) {
 				media = new Audio();
-				media.preload = 'auto';
+				media.preload = 'metadata';
+				media.addEventListener('loadedmetadata', function() {
+					finish(true);
+				}, { once: true });
 				media.addEventListener('canplaythrough', function() {
 					finish(true);
 				}, { once: true });
@@ -148,7 +158,7 @@
 
 	var preload = function(urls, onProgress, options) {
 		options = options || {};
-		var list = (urls || INVITATION_ASSETS).map(withAssetBase);
+		var list = (urls || OPEN_ASSETS).map(withAssetBase);
 		var loaded = 0;
 		var total = list.length;
 
@@ -171,6 +181,28 @@
 					}
 				});
 		}));
+	};
+
+	var scheduleIdle = function(fn, delayMs) {
+		var run = function() {
+			try {
+				fn();
+			} catch (error) {}
+		};
+
+		if (typeof window.requestIdleCallback === 'function') {
+			window.requestIdleCallback(run, { timeout: delayMs || 2500 });
+			return;
+		}
+
+		setTimeout(run, delayMs || 1200);
+	};
+
+	var preloadDeferred = function() {
+		return preload(DEFERRED_ASSETS, null, {
+			timeoutMs: ASSET_TIMEOUT_MS,
+			requireSuccess: false
+		});
 	};
 
 	var waitForImageElement = function(img, timeoutMs) {
@@ -258,12 +290,17 @@
 	};
 
 	window.NuptialPreloader = {
-		assets: INVITATION_ASSETS,
+		assets: OPEN_ASSETS,
+		openAssets: OPEN_ASSETS,
 		criticalAssets: CRITICAL_ASSETS,
+		deferredAssets: DEFERRED_ASSETS,
+		allAssets: INVITATION_ASSETS,
 		show: show,
 		hide: hide,
 		updateProgress: updateProgress,
 		preload: preload,
+		preloadDeferred: preloadDeferred,
+		scheduleIdle: scheduleIdle,
 		waitForDomImages: waitForDomImages,
 		waitForCriticalAssets: waitForCriticalAssets
 	};
