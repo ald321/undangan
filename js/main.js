@@ -23,6 +23,10 @@
 
 	// Parallax
 	var parallax = function() {
+		if (typeof $.fn.stellar !== 'function') {
+			return;
+		}
+
 		if ( !isiPad() || !isiPhone() ) {
 			$(window).stellar();
 		}
@@ -712,6 +716,46 @@
 			});
 	};
 
+	var parseRsvpResponse = function(response) {
+		if (!response.ok) {
+			throw new Error('RSVP HTTP ' + response.status);
+		}
+
+		return response.text().then(function(raw) {
+			var trimmed = String(raw || '').trim();
+			var data = null;
+
+			if (trimmed) {
+				try {
+					data = JSON.parse(trimmed);
+				} catch (error) {
+					throw new Error('RSVP response is not valid JSON.');
+				}
+			}
+
+			var status = data && String(data.status || '').toLowerCase();
+			var succeeded =
+				status === 'ok' ||
+				status === 'success' ||
+				(data && data.success === true) ||
+				(data && data.ok === true);
+
+			var failed =
+				status === 'error' ||
+				(data && data.success === false) ||
+				(data && data.ok === false);
+
+			if (failed || !succeeded) {
+				var message =
+					(data && (data.message || data.error)) ||
+					'RSVP was not accepted.';
+				throw new Error(message);
+			}
+
+			return data;
+		});
+	};
+
 	var staticForms = function() {
 		$('#fh5co-started form').on('submit', function(e) {
 			e.preventDefault();
@@ -750,6 +794,8 @@
 
 			submitButton.prop('disabled', true).text('Mengirim...');
 
+			var didSucceed = false;
+
 			fetch(RSVP_API_URL, {
 				method: 'POST',
 				headers: {
@@ -758,7 +804,9 @@
 				body: JSON.stringify(payload),
 				redirect: 'follow'
 			})
+				.then(parseRsvpResponse)
 				.then(function() {
+					didSucceed = true;
 					submitButton.text('Terkirim');
 					$('#kehadiran-attendance').prop('selectedIndex', 0);
 					$('#kehadiran-address').val('');
@@ -771,6 +819,10 @@
 					alert('Gagal mengirim. Coba lagi.');
 				})
 				.then(function() {
+					if (!didSucceed) {
+						return;
+					}
+
 					window.setTimeout(function() {
 						submitButton.prop('disabled', false).text(originalLabel);
 					}, 2000);

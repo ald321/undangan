@@ -21,7 +21,11 @@
 		},
 
 		hasGSAP: function () {
-			return typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+			return typeof window.gsap !== 'undefined';
+		},
+
+		hasScrollTrigger: function () {
+			return this.hasGSAP() && typeof window.ScrollTrigger !== 'undefined';
 		},
 
 		getScroller: function () {
@@ -29,7 +33,7 @@
 		},
 
 		init: function () {
-			if (!this.hasGSAP() || this.reducedMotion()) {
+			if (!this.hasScrollTrigger() || this.reducedMotion()) {
 				this.fallbackReveal();
 				this.fallbackInvitationSlides();
 				return;

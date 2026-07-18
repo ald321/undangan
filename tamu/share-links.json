@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-07-14T03:43:07.450782+00:00",
+  "generatedAt": "2026-07-18T05:55:59.775057+00:00",
   "baseUrl": "https://ald321.github.io/undangan",
-  "mode": "B",
+  "mode": "B-thin",
   "sharePattern": "{baseUrl}/tamu/{code}/",
   "invitePattern": "{baseUrl}/?to={code}",
   "guests": [
