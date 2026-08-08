@@ -1246,15 +1246,6 @@ body.invitation-page #invitation-content {
   padding-bottom: 56px;
 }
 
-#invitation-content .invitation-slide-closing-bg {
-  position: relative;
-  min-height: min(100dvh, 920px);
-  padding: 0;
-  overflow: hidden;
-  background: #f7f1e8 url(../images/closing-thankyou.png) center center / cover no-repeat;
-  will-change: transform, opacity;
-}
-
 .invitation-slide.is-active .invitation-card {
   box-shadow: 0 26px 64px rgba(72, 38, 43, 0.14);
 }
@@ -1296,6 +1287,9 @@ body.invitation-page #invitation-content {
 
 #invitation-content .invitation-card.invitation-card-closing {
   position: relative;
+  padding: 0;
+  overflow: hidden;
+  width: min(520px, 92vw);
   background: transparent !important;
   border: none;
   box-shadow: none;
@@ -1308,6 +1302,7 @@ body.invitation-page #invitation-content {
 #invitation-content .invitation-card.invitation-card-closing .invitation-section-body {
   position: relative;
   z-index: 1;
+  line-height: 0;
 }
 
 #invitation-content .invitation-card.invitation-card-photo {
@@ -1320,11 +1315,13 @@ body.invitation-page #invitation-content {
   overflow: visible;
 }
 
-#invitation-content .akan-menikah-photo {
+#invitation-content .akan-menikah-photo,
+#invitation-content .closing-thankyou-photo {
   line-height: 0;
 }
 
-#invitation-content .akan-menikah-img {
+#invitation-content .akan-menikah-img,
+#invitation-content .closing-thankyou-img {
   display: block;
   width: 100%;
   height: auto;
@@ -1338,7 +1335,8 @@ body.invitation-page #invitation-content {
     border-radius: 20px;
   }
 
-  #invitation-content .akan-menikah-img {
+  #invitation-content .akan-menikah-img,
+  #invitation-content .closing-thankyou-img {
     border-radius: 20px;
   }
 }
@@ -1361,6 +1359,15 @@ body.invitation-page #invitation-content {
 #invitation-content .invitation-slide-scenic-bg > .invitation-card {
   position: relative;
   z-index: 1;
+}
+
+#invitation-content #slide-penutup.invitation-slide-scenic-bg {
+  background: #f7f1e8;
+  background-image: none;
+}
+
+#invitation-content #slide-penutup.invitation-slide-scenic-bg::before {
+  display: none;
 }
 
 #invitation-content .invitation-card.invitation-card-journey {

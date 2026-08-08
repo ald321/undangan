@@ -180,8 +180,7 @@
 		getSlideSurface: function (slide) {
 			return (
 				slide.querySelector('.invitation-card') ||
-				slide.querySelector('.countdown-card') ||
-				(slide.classList.contains('invitation-slide-closing-bg') ? slide : null)
+				slide.querySelector('.countdown-card')
 			);
 		},
 

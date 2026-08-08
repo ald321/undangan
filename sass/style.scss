@@ -1233,15 +1233,6 @@ html.invitation-page {
 		padding-bottom: 56px;
 	}
 
-	&.invitation-slide-closing-bg {
-		position: relative;
-		min-height: min(100dvh, 920px);
-		padding: 0;
-		overflow: hidden;
-		background: #f7f1e8 url('../images/closing-thankyou.png') center center / cover no-repeat;
-		will-change: transform, opacity;
-	}
-
 	&.is-active .invitation-card {
 		box-shadow: 0 26px 64px rgba(72, 38, 43, 0.14);
 	}
@@ -1283,6 +1274,9 @@ html.invitation-page {
 
 	&.invitation-card-closing {
 		position: relative;
+		padding: 0;
+		overflow: hidden;
+		width: min(520px, 92vw);
 		background: transparent !important;
 		border: none;
 		box-shadow: none;
@@ -1294,6 +1288,7 @@ html.invitation-page {
 		.invitation-section-body {
 			position: relative;
 			z-index: 1;
+			line-height: 0;
 		}
 	}
 }
@@ -1305,11 +1300,13 @@ html.invitation-page {
 		width: min(520px, 92vw);
 	}
 
-	.akan-menikah-photo {
+	.akan-menikah-photo,
+	.closing-thankyou-photo {
 		line-height: 0;
 	}
 
-	.akan-menikah-img {
+	.akan-menikah-img,
+	.closing-thankyou-img {
 		display: block;
 		width: 100%;
 		height: auto;
@@ -1334,6 +1331,15 @@ html.invitation-page {
 		> .invitation-card {
 			position: relative;
 			z-index: 1;
+		}
+	}
+
+	#slide-penutup.invitation-slide-scenic-bg {
+		background: #f7f1e8;
+		background-image: none;
+
+		&::before {
+			display: none;
 		}
 	}
 
@@ -1624,7 +1630,8 @@ html.invitation-page {
 		padding: 0;
 	}
 
-	#invitation-content .akan-menikah-img {
+	#invitation-content .akan-menikah-img,
+	#invitation-content .closing-thankyou-img {
 		border-radius: 20px;
 	}
 
