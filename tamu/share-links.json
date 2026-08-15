@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-15T06:41:56.578772+00:00",
+  "generatedAt": "2026-08-15T07:25:14.472939+00:00",
   "baseUrl": "https://ald321.github.io/undangan",
   "mode": "B-thin",
   "sharePattern": "{baseUrl}/tamu/{code}/",
@@ -1000,6 +1000,12 @@
       "name": "Titania & Partner",
       "shareUrl": "https://ald321.github.io/undangan/tamu/f366c974-727c-4f47-b528-8fa621b3fa50/",
       "inviteUrl": "https://ald321.github.io/undangan/?to=f366c974-727c-4f47-b528-8fa621b3fa50"
+    },
+    {
+      "code": "2e3094ee-a8be-4170-94a2-cdace21f3245",
+      "name": "Rosita & Partner",
+      "shareUrl": "https://ald321.github.io/undangan/tamu/2e3094ee-a8be-4170-94a2-cdace21f3245/",
+      "inviteUrl": "https://ald321.github.io/undangan/?to=2e3094ee-a8be-4170-94a2-cdace21f3245"
     }
   ]
 }
